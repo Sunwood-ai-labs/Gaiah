@@ -15,11 +15,20 @@
 [![GitHub Release](https://img.shields.io/github/v/release/Sunwood-ai-labs/Gaiah?sort=date&color=red)](https://github.com/Sunwood-ai-labs/Gaiah)
 [![GitHub Tag](https://img.shields.io/github/v/tag/Sunwood-ai-labs/Gaiah?color=orange)](https://github.com/Sunwood-ai-labs/Gaiah)
 
-  <br>
-
 </h2>
 
-
+<p align="center">
+  <a href="https://hamaruki.com/"><b>[🌐 Website]</b></a> •
+  <!-- <a href="https://arxiv.org/abs/2309.17452"><b>[📜 Paper]</b></a> • -->
+  <!-- <a href="https://huggingface.co/llm-agents"><b>[🤗 HF Models]</b></a> • -->
+  <a href="https://github.com/Sunwood-ai-labs/Gaiah"><b>[🐱 GitHub]</b></a>
+  <!-- <a href="https://9557c5365a6f44dc84.gradio.live"><b>[🐯 Gradio Demo]</b></a> -->
+  <a href="https://twitter.com/hAru_mAki_ch"><b>[🐦 Twitter]</b></a> •
+  <!-- <a href="https://www.reddit.com/r/LocalLLaMA/comments/1703k6d/tora_a_toolintegrated_reasoning_agent_for/"><b>[💬 Reddit]</b></a> • -->
+  <a href="https://hamaruki.com/how-to-control-git-with-python-example-of-using-the-gaiah-library/">[🍀 Official Blog]</a>
+  <!-- <a href="#-quick-start">Quick Start</a> • -->
+  <!-- <a href="#%EF%B8%8F-citation">Citation</a> -->
+</p>
 
 </p>
 
