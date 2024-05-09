@@ -1,10 +1,10 @@
 
 <p align="center">
-<img src="https://media.githubusercontent.com/media/Sunwood-ai-labs/HarmonAI/main/docs/icon/icon2.gif" width="100%">
+<img src="docs/Gaiah_icon1.png" width="100%">
 <br>
-<h1 align="center">HarmonAI II</h1>
+<h1 align="center">Gaiah</h1>
 <h2 align="center">
-  ～AI Harmony, Infinite Possibilities～
+  ～Python Git Automation with Innovative Heuristics～
 
 [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/MakiAi/HarmonAI_II)
 [![HarmonAI_II - Sunwood-ai-labs](https://img.shields.io/static/v1?label=HarmonAI_II&message=Sunwood-ai-labs&color=blue&logo=github)](https://github.com/HarmonAI_II/Sunwood-ai-labs "Go to GitHub repo")
