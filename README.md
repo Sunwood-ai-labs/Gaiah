@@ -6,14 +6,14 @@
 <h2 align="center">
   ～Python Git Automation with Innovative Heuristics～
 
-[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/MakiAi/HarmonAI_II)
-[![HarmonAI_II - Sunwood-ai-labs](https://img.shields.io/static/v1?label=HarmonAI_II&message=Sunwood-ai-labs&color=blue&logo=github)](https://github.com/HarmonAI_II/Sunwood-ai-labs "Go to GitHub repo")
-[![stars - Sunwood-ai-labs](https://img.shields.io/github/stars/HarmonAI_II/Sunwood-ai-labs?style=social)](https://github.com/HarmonAI_II/Sunwood-ai-labs)
-[![forks - Sunwood-ai-labs](https://img.shields.io/github/forks/HarmonAI_II/Sunwood-ai-labs?style=social)](https://github.com/HarmonAI_II/Sunwood-ai-labs)
-[![GitHub Last Commit](https://img.shields.io/github/last-commit/Sunwood-ai-labs/HarmonAI_II)](https://github.com/Sunwood-ai-labs/HarmonAI_II)
-[![GitHub Top Language](https://img.shields.io/github/languages/top/Sunwood-ai-labs/HarmonAI_II)](https://github.com/Sunwood-ai-labs/HarmonAI_II)
-[![GitHub Release](https://img.shields.io/github/v/release/Sunwood-ai-labs/HarmonAI_II?sort=date&color=red)](https://github.com/Sunwood-ai-labs/HarmonAI_II)
-[![GitHub Tag](https://img.shields.io/github/v/tag/Sunwood-ai-labs/HarmonAI_II?color=orange)](https://github.com/Sunwood-ai-labs/HarmonAI_II)
+[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/MakiAi/Gaiah)
+[![Gaiah - Sunwood-ai-labs](https://img.shields.io/static/v1?label=Gaiah&message=Sunwood-ai-labs&color=blue&logo=github)](https://github.com/Gaiah/Sunwood-ai-labs "Go to GitHub repo")
+[![stars - Sunwood-ai-labs](https://img.shields.io/github/stars/Gaiah/Sunwood-ai-labs?style=social)](https://github.com/Gaiah/Sunwood-ai-labs)
+[![forks - Sunwood-ai-labs](https://img.shields.io/github/forks/Gaiah/Sunwood-ai-labs?style=social)](https://github.com/Gaiah/Sunwood-ai-labs)
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/Sunwood-ai-labs/Gaiah)](https://github.com/Sunwood-ai-labs/Gaiah)
+[![GitHub Top Language](https://img.shields.io/github/languages/top/Sunwood-ai-labs/Gaiah)](https://github.com/Sunwood-ai-labs/Gaiah)
+[![GitHub Release](https://img.shields.io/github/v/release/Sunwood-ai-labs/Gaiah?sort=date&color=red)](https://github.com/Sunwood-ai-labs/Gaiah)
+[![GitHub Tag](https://img.shields.io/github/v/tag/Sunwood-ai-labs/Gaiah?color=orange)](https://github.com/Sunwood-ai-labs/Gaiah)
 
   <br>
 
