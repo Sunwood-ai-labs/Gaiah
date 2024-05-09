@@ -1,6 +1,6 @@
 
 <p align="center">
-<img src="docs/Gaiah_icon1.png" width="100%">
+<img src="https://media.githubusercontent.com/media/Sunwood-ai-labs/Gaiah/main/docs/Gaiah_icon1.png" width="100%">
 <br>
 <h1 align="center">Gaiah</h1>
 <h2 align="center">
