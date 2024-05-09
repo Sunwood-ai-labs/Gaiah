@@ -2,8 +2,11 @@ import os
 from git import Repo
 
 # 初期化するフォルダのパス
-repo_dir = "C:\\Prj\\Gaiah_Sample01"
+repo_dir = "C:\\Prj\\Gaiah_Sample02"
 
+# フォルダが存在しない場合は作成する
+if not os.path.exists(repo_dir):
+    os.makedirs(repo_dir)
 
 # Repoオブジェクトの作成
 repo = Repo.init(repo_dir)

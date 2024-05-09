@@ -9,16 +9,13 @@ load_dotenv()
 access_token = os.getenv("GITHUB_ACCESS_TOKEN")
 
 # リモートリポジトリのURL
-remote_url = f"https://{access_token}@github.com/Sunwood-ai-labs/Gaiah_Sample01"
+remote_url = f"https://{access_token}@github.com/Sunwood-ai-labs/Gaiah_Sample02"
 
 # Repoオブジェクトの作成
-repo = Repo("C:\\Prj\\Gaiah_Sample01")
+repo = Repo("C:\\Prj\\Gaiah_Sample02")
 
-# 既存のリモートリポジトリを取得
-origin = repo.remote("origin")
-
-# リモートリポジトリのURLを設定
-origin.set_url(remote_url)
+# 新しいリモートを作成
+origin = repo.create_remote("origin", remote_url)
 
 # リモートリポジトリにプッシュ
 origin.push(refspec="master:master")

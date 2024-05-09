@@ -12,10 +12,10 @@ access_token = os.getenv("GITHUB_ACCESS_TOKEN")
 g = Github(access_token)
 
 # リポジトリ名
-repo_name = "Gaiah_Sample01"
+repo_name = "Gaiah_Sample02"
 
 # リポジトリの説明
-repo_description = "Gaiah_Sample01 repo"
+repo_description = "Gaiah_Sample02 repo"
 
 # リポジトリを作成
 repo = g.get_user().create_repo(repo_name, description=repo_description)
