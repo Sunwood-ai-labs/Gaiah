@@ -70,6 +70,7 @@ Gaiahの使用を開始するには、次の手順に従ってください:
    pip install gitpython
    pip install python-dotenv
    pip install PyGithub
+   pip install termcolor
    ```
 
 ## 🎉 使用方法
