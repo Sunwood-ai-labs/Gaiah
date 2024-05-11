@@ -24,3 +24,4 @@ sourcesage.egg-info
 dist
 build
 .env
+example
