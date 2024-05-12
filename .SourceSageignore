@@ -25,3 +25,6 @@ dist
 build
 .env
 example
+gaiah.egg-info
+.gaiah.md
+.Gaiah.md
