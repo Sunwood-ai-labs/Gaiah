@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages
-from gaiah.version import __version__
+# from gaiah.version import __version__
 
 # READMEファイルの内容を読み込む
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -14,7 +14,7 @@ setup(
     name='gaiah',
     
     # パッケージのバージョン
-    version=__version__,
+    version="0.1.0",
     
     # パッケージに含めるモジュールを自動的に探す
     packages=find_packages(),
