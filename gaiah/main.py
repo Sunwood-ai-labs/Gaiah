@@ -2,29 +2,27 @@ from git import Repo
 import os
 from termcolor import colored
 import re
-from .config import load_config
 
-def process_commits():
-    config = load_config()
-    repo_dir = config['repo_dir']
-    commit_messages_path = config['commit_messages_path']
-
+def process_commits(repo_dir, commit_messages_path):
     # Repoオブジェクトの作成
     repo = Repo(repo_dir)
+    print(colored("リポジトリオブジェクトが作成されました。", "cyan"))
 
     # 現在のブランチ名を取得
     current_branch = repo.active_branch.name
+    print(colored(f"現在のブランチ: {current_branch}", "cyan"))
 
     # commit_messages.mdファイルから情報を読み込む
     try:
         with open(commit_messages_path, "r", encoding="utf-8") as file:
             content = file.read()
+            print(colored(f"{commit_messages_path} からコミットメッセージを読み込みました。", "cyan"))
     except FileNotFoundError:
-        print(colored(f"Error: {commit_messages_path} not found.", "red"))
-        raise
+        print(colored(f"エラー: {commit_messages_path} が見つかりません。", "red"))
+        return
     except UnicodeDecodeError:
-        print(colored(f"Error: Unable to decode {commit_messages_path}. Please ensure the file is saved with UTF-8 encoding.", "red"))
-        raise
+        print(colored(f"エラー: {commit_messages_path} のデコードに失敗しました。ファイルがUTF-8で保存されていることを確認してください。", "red"))
+        return
 
     # コミットごとに分割
     commits = re.split(r'(?m)^##\s', content)[1:]
@@ -34,21 +32,20 @@ def process_commits():
         filename_match = re.search(r'(?m)^###\s(.+)', commit)
         if filename_match:
             filename = filename_match.group(1).strip()
+            print(colored(f"ファイル {filename} を処理中...", "blue"))
         else:
-            print(colored("Error: File name not found in the commit section.", "red"))
+            print(colored("エラー: コミットセクションにファイル名が見つかりません。", "red"))
             continue
 
         # コミットメッセージを抽出
         commit_message_match = re.search(r'```commit-msg\n(.*?)\n```', commit, re.DOTALL)
         if commit_message_match:
             commit_message = commit_message_match.group(1).strip()
+            print(colored(f"------- コミットメッセージ: -------\n{commit_message}", "green"))
+            print(colored(f"-----------------------------------", "green"))
         else:
-            print(colored("Error: Commit message not found in the commit section.", "red"))
+            print(colored("エラー: コミットセクションにコミットメッセージが見つかりません。", "red"))
             continue
-
-        print(colored(">"*60, "blue"))
-        print(colored(f">>> filename: {filename}", "blue"))
-        print(colored(f"----- commit_message: ----- \n{commit_message}", "green"))
 
         # ファイルの差分を取得
         diff_index = repo.index.diff(None)
@@ -60,31 +57,33 @@ def process_commits():
                 if diff.change_type == "A":
                     # ファイルが追加された場合
                     repo.index.add([filename])
-                    print(colored(f"Added file: {filename}", "green"))
+                    print(colored(f"ファイル {filename} を追加しました。", "green"))
                 elif diff.change_type == "D":
                     # ファイルが削除された場合
                     repo.index.remove([filename])
-                    print(colored(f"Deleted file: {filename}", "red"))
+                    print(colored(f"ファイル {filename} を削除しました。", "red"))
                 else:
                     # ファイルが変更された場合
                     repo.index.add([filename])
-                    print(colored(f"Modified file: {filename}", "yellow"))
+                    print(colored(f"ファイル {filename} を変更しました。", "yellow"))
 
         if not file_changed:
-            print(colored(f"No changes detected for file: {filename}", "magenta"))
+            print(colored(f"ファイル {filename} に変更はありませんでした。", "magenta"))
         else:
             # 変更をコミット
             repo.index.commit(commit_message)
+            print(colored("変更をコミットしました。", "green"))
 
     # リモートリポジトリを取得
     origin = repo.remote("origin")
 
-    # 現在のブランチをリモートリポジトリに紐付ける
-    repo.git.push("--set-upstream", origin, current_branch)
+    # コミットとプッシュ
+    try:
+        repo.git.push("--set-upstream", origin, current_branch)
+        print(colored("リモートリポジトリにプッシュしました。", "cyan"))
+    except Exception as e:
+        print(colored(f"リモートへのプッシュエラー: {e}", "red"))
 
-    # 現在のブランチをリモートリポジトリにプッシュ
-    origin.push()
-
-    print(colored("-"*60, "red"))
+    print(colored("-" * 60, "red"))
     print(colored(f"すべてのファイルの更新、コミット、プッシュが完了しました。\n現在のブランチ: {current_branch}", "red"))
-    print(colored("-"*60, "red"))
+    print(colored("-" * 60, "red"))
