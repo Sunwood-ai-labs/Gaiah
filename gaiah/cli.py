@@ -27,4 +27,4 @@ def main():
     
     process_commits(args.repo_dir, commit_msg_path)
     
-    tprint("!! 成功しました !!")
+    tprint("!! successfully !!")
