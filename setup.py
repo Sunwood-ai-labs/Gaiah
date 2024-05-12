@@ -28,7 +28,8 @@ setup(
     
     # パッケージに含めるデータファイル
     package_data={
-        'gaiah': ['README.md'],
+        'gaiah': ['README.md',
+                  'requirements.txt'],
     },
     
     # PyPIに表示される長い説明文
