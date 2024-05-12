@@ -4,6 +4,32 @@ import re
 from termcolor import colored
 import subprocess
 
+
+def get_modified_files(repo_dir):
+    """
+    リポジトリ内の変更されているファイルの一覧を取得する
+    """
+    try:
+        # git status コマンドを実行して変更されているファイルの情報を取得
+        result = subprocess.run(["git", "status", "--porcelain"], cwd=repo_dir, text=True, capture_output=True, check=True)
+        output = result.stdout
+        modified_files = []
+
+        # コマンドの出力から変更されたファイルのリストを作成
+        for line in output.splitlines():
+            # "--porcelain" オプションは変更を機械読み取り可能な形式で出力する
+            parts = line.split()
+            if parts:
+                # parts[0] は変更の種類を表す文字列（例: 'M', 'A', 'D', '??'）、parts[1] はファイル名
+                status = parts[0]
+                file_path = ' '.join(parts[1:])  # ファイル名がスペースを含む場合に対応
+                modified_files.append((status, file_path))
+
+        return modified_files
+    except subprocess.CalledProcessError as e:
+        print(colored(f"エラー: {e}", "red"))
+        return []
+
 class Gaiah:
     def __init__(self, repo_dir, commit_messages_path):
         self.repo_dir = repo_dir
@@ -38,7 +64,7 @@ class Gaiah:
         return True
 
     def process_commits(self):
-        self.unstage_files()  # ステージされたファイルをアンステージ
+        # self.unstage_files()  # ステージされたファイルをアンステージ
 
         try:
             with open(self.commit_messages_path, "r", encoding="utf-8") as file:
@@ -79,11 +105,7 @@ class Gaiah:
         self.push_to_remote()
 
     def process_file(self, filename, commit_message):
-        diff_index = self.repo.index.diff(None)
-        print(diff_index)
-        # diff_index = self.repo.index.diff(None)
-        # print(diff_index)
-        # raise
+        diff_index = self.repo.index.diff("HEAD")
         
         file_changed = False
         for diff in diff_index:
