@@ -2,6 +2,7 @@ from git import Repo
 import os
 import re
 from termcolor import colored
+import subprocess
 
 class Gaiah:
     def __init__(self, repo_dir, commit_messages_path):
@@ -12,7 +13,33 @@ class Gaiah:
         print(colored("リポジトリオブジェクトが作成されました。", "cyan"))
         print(colored(f"現在のブランチ: {self.current_branch}", "cyan"))
 
+    def unstage_files(self):
+        """
+        ステージにある全てのファイルをアンステージする
+        """
+        msg = "-"*20 + " unstage " + "-"*20
+        print(colored(f"{msg}", "green"))
+        
+        diff_index = self.repo.index.diff("HEAD")
+        staged_files = [diff.a_path for diff in diff_index]
+        if staged_files:
+            # アンステージするファイルがある場合
+            for file_path in staged_files:
+                try:
+                    subprocess.run(["git", "reset", "HEAD", file_path], check=True, cwd=self.repo_dir)
+                    print(colored(f"ファイル {file_path} がアンステージされました。", "green"))
+                except subprocess.CalledProcessError as e:
+                    print(colored(f"アンステージエラー: {e}", "red"))
+                    return False
+        else:
+            print(colored("ステージされたファイルはありません。", "magenta"))
+        
+        print(colored(f"-"*len(msg), "green"))
+        return True
+
     def process_commits(self):
+        self.unstage_files()  # ステージされたファイルをアンステージ
+
         try:
             with open(self.commit_messages_path, "r", encoding="utf-8") as file:
                 content = file.read()
