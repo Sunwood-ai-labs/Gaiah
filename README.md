@@ -1,6 +1,6 @@
 
 <p align="center">
-<img src="https://media.githubusercontent.com/media/Sunwood-ai-labs/Gaiah/main/docs/Gaiah_icon1.png" width="100%">
+<img src="https://huggingface.co/datasets/MakiAi/IconAssets/resolve/main/Gaiah_icon1.png" width="100%">
 <br>
 <h1 align="center">Gaiah</h1>
 <h2 align="center">
@@ -73,6 +73,7 @@ GaiahのCLI機能に
 より、コマンドラインから直接Git操作を行うことができます。例えば、以下のコマンドを使用してリポジトリにコミットを追加することができます:
 ```
 gaiah --repo_dir="C:\\Prj\\Gaiah_Sample02" --commit_msg_path=./tmp2.md
+gaiah --repo_dir="./" --commit_msg_path=./tmp2.md
 ```
 
 ## 🤝 貢献
