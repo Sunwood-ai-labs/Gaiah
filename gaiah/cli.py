@@ -3,6 +3,7 @@ from .main import process_commits
 from art import *
 import os
 from termcolor import colored
+from .gaiah import Gaiah
 
 def main():
     parser = argparse.ArgumentParser(description='Gaiah - シンプルなGitリポジトリ管理ツール')
@@ -24,7 +25,7 @@ def main():
             print(colored("-" * 60, "red"))
             return
 
-    
-    process_commits(args.repo_dir, commit_msg_path)
+    gaiah = Gaiah(args.repo_dir, args.commit_msg_path)
+    gaiah.process_commits()
     
     tprint("!! successfully !!")
