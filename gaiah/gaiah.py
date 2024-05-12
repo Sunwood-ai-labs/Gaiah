@@ -24,6 +24,9 @@ class Gaiah:
             print(colored(f"エラー: {self.commit_messages_path} のデコードに失敗しました。ファイルがUTF-8で保存されていることを確認してください。", "red"))
             return
 
+        # 最後のコードブロックの終わり以降の文字列を削除
+        # content = re.sub(r'```.*$', '', content, flags=re.DOTALL)
+
         commits = re.split(r'(?m)^##\s', content)[1:]
 
         for commit in commits:
