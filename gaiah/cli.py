@@ -1,12 +1,16 @@
 import argparse
 from .main import process_commits
+from art import *
+
+
 
 def main():
-    parser = argparse.ArgumentParser(description='Gaiah - Git Repository Management Tool')
-    parser.add_argument('action', choices=['commit'], help='Action to perform')
+    parser = argparse.ArgumentParser(description='Gaiah - Simplified Git Repository Management Tool')
+    parser.add_argument('--repo_dir', required=True, help='Directory of the repository')
+    parser.add_argument('--commit_msg_path', required=True, help='Path to the commit message file')
     args = parser.parse_args()
 
-    if args.action == 'commit':
-        process_commits()
-    else:
-        print('Invalid action')
+    tprint("-- Gaiah --")
+    process_commits(args.repo_dir, args.commit_msg_path)
+    
+    tprint("!! successfully !!")
