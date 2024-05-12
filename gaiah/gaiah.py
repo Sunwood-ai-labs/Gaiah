@@ -84,6 +84,7 @@ class Gaiah:
         # diff_index = self.repo.index.diff(None)
         # print(diff_index)
         # raise
+        
         file_changed = False
         for diff in diff_index:
             print(diff.a_path)
