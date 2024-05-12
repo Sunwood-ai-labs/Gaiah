@@ -1,5 +1,4 @@
 import argparse
-from .main import process_commits
 from art import *
 import os
 from termcolor import colored
