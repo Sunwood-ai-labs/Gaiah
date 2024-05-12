@@ -1,7 +1,6 @@
-from .main import process_commits
+from .gaiah import Gaiah
 from .cli import main
-from .version import __version__
 
-__version__ = '0.3.0'
+__version__ = '0.4.0'
 
-__all__ = ['process_commits', 'main', '__version__']
+__all__ = ['Gaiah', 'main', '__version__']
