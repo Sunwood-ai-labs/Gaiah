@@ -105,29 +105,45 @@ class Gaiah:
         self.push_to_remote()
 
     def process_file(self, filename, commit_message):
-        diff_index = self.repo.index.diff("HEAD")
-        
-        file_changed = False
-        for diff in diff_index:
-            print(diff.a_path)
-            print("-------------------------")
-            if diff.a_path == filename:
-                file_changed = True
-                if diff.change_type == "A":
-                    self.repo.index.add([filename])
-                    print(colored(f"ファイル {filename} を追加しました。", "green"))
-                elif diff.change_type == "D":
-                    self.repo.index.remove([filename])
-                    print(colored(f"ファイル {filename} を削除しました。", "red"))
-                else:
-                    self.repo.index.add([filename])
-                    print(colored(f"ファイル {filename} を変更しました。", "yellow"))
+        try:
+            # git diff コマンドを実行
+            result = subprocess.run(
+                ["git", "diff", "--name-status", "HEAD"],
+                cwd=self.repo_path,
+                text=True,
+                capture_output=True,
+                check=True
+            )
 
-        if file_changed:
-            self.repo.index.commit(commit_message)
-            print(colored("変更をコミットしました。", "green"))
-        else:
-            print(colored(f"ファイル {filename} に変更はありませんでした。", "magenta"))
+            # 結果のパース
+            lines = result.stdout.splitlines()
+            file_changed = False
+            for line in lines:
+                status, path = line.split(maxsplit=1)
+                print(path)
+                print(status)
+                print("-------------------------")
+                if path == filename:
+                    file_changed = True
+                    if status == "A":
+                        subprocess.run(["git", "add", filename], cwd=self.repo_path)
+                        print(colored(f"ファイル {filename} を追加しました。", "green"))
+                    elif status == "D":
+                        subprocess.run(["git", "rm", filename], cwd=self.repo_path)
+                        print(colored(f"ファイル {filename} を削除しました。", "red"))
+                    else:  # Modified or other changes
+                        subprocess.run(["git", "add", filename], cwd=self.repo_path)
+                        print(colored(f"ファイル {filename} を変更しました。", "yellow"))
+
+            # コミット処理
+            if file_changed:
+                subprocess.run(["git", "commit", "-m", commit_message], cwd=self.repo_path)
+                print(colored("変更をコミットしました。", "green"))
+            else:
+                print(colored(f"ファイル {filename} に変更はありませんでした。", "magenta"))
+
+        except subprocess.CalledProcessError as e:
+            print(colored(f"Git コマンドの実行中にエラーが発生しました: {e}", "red"))
 
     def push_to_remote(self):
         origin = self.repo.remote("origin")
