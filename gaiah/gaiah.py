@@ -10,19 +10,15 @@ def get_modified_files(repo_dir):
     リポジトリ内の変更されているファイルの一覧を取得する
     """
     try:
-        # git status コマンドを実行して変更されているファイルの情報を取得
         result = subprocess.run(["git", "status", "--porcelain"], cwd=repo_dir, text=True, capture_output=True, check=True)
         output = result.stdout
         modified_files = []
 
-        # コマンドの出力から変更されたファイルのリストを作成
         for line in output.splitlines():
-            # "--porcelain" オプションは変更を機械読み取り可能な形式で出力する
             parts = line.split()
             if parts:
-                # parts[0] は変更の種類を表す文字列（例: 'M', 'A', 'D', '??'）、parts[1] はファイル名
                 status = parts[0]
-                file_path = ' '.join(parts[1:])  # ファイル名がスペースを含む場合に対応
+                file_path = ' '.join(parts[1:])
                 modified_files.append((status, file_path))
 
         return modified_files
@@ -30,7 +26,12 @@ def get_modified_files(repo_dir):
         print(colored(f"エラー: {e}", "red"))
         return []
 
+
 class Gaiah:
+    COMMIT_SECTION_REGEX = r'(?m)^##\s'
+    FILENAME_REGEX = r'(?m)^###\s(.+)'
+    COMMIT_MESSAGE_REGEX = r'```commit-msg\n(.*?)\n```'
+
     def __init__(self, repo_dir, commit_messages_path):
         self.repo_dir = repo_dir
         self.commit_messages_path = commit_messages_path
@@ -43,13 +44,12 @@ class Gaiah:
         """
         ステージにある全てのファイルをアンステージする
         """
-        msg = "-"*20 + " unstage " + "-"*20
+        msg = "-" * 20 + " unstage " + "-" * 20
         print(colored(f"{msg}", "green"))
-        
+
         diff_index = self.repo.index.diff("HEAD")
         staged_files = [diff.a_path for diff in diff_index]
         if staged_files:
-            # アンステージするファイルがある場合
             for file_path in staged_files:
                 try:
                     subprocess.run(["git", "reset", "HEAD", file_path], check=True, cwd=self.repo_dir)
@@ -59,13 +59,11 @@ class Gaiah:
                     return False
         else:
             print(colored("ステージされたファイルはありません。", "magenta"))
-        
-        print(colored(f"-"*len(msg), "green"))
+
+        print(colored(f"-" * len(msg), "green"))
         return True
 
     def process_commits(self):
-        # self.unstage_files()  # ステージされたファイルをアンステージ
-
         try:
             with open(self.commit_messages_path, "r", encoding="utf-8") as file:
                 content = file.read()
@@ -77,13 +75,10 @@ class Gaiah:
             print(colored(f"エラー: {self.commit_messages_path} のデコードに失敗しました。ファイルがUTF-8で保存されていることを確認してください。", "red"))
             return
 
-        # 最後のコードブロックの終わり以降の文字列を削除
-        # content = re.sub(r'```.*$', '', content, flags=re.DOTALL)
-
-        commits = re.split(r'(?m)^##\s', content)[1:]
+        commits = re.split(self.COMMIT_SECTION_REGEX, content)[1:]
 
         for commit in commits:
-            filename_match = re.search(r'(?m)^###\s(.+)', commit)
+            filename_match = re.search(self.FILENAME_REGEX, commit)
             if filename_match:
                 filename = filename_match.group(1).strip()
                 print(colored(f"ファイル [{filename}] を処理中...", "blue"))
@@ -91,7 +86,7 @@ class Gaiah:
                 print(colored("エラー: コミットセクションにファイル名が見つかりません。", "red"))
                 continue
 
-            commit_message_match = re.search(r'```commit-msg\n(.*?)\n```', commit, re.DOTALL)
+            commit_message_match = re.search(self.COMMIT_MESSAGE_REGEX, commit, re.DOTALL)
             if commit_message_match:
                 commit_message = commit_message_match.group(1).strip()
                 print(colored(f"------- コミットメッセージ: -------\n{commit_message}", "green"))
@@ -106,7 +101,6 @@ class Gaiah:
 
     def process_file(self, filename, commit_message):
         try:
-            # git diff コマンドを実行
             result = subprocess.run(
                 ["git", "diff", "--name-status", "HEAD"],
                 cwd=self.repo_dir,
@@ -115,35 +109,44 @@ class Gaiah:
                 check=True
             )
 
-            # 結果のパース
             lines = result.stdout.splitlines()
             file_changed = False
             for line in lines:
                 status, path = line.split(maxsplit=1)
-                print(path)
-                print(status)
-                print("-------------------------")
                 if path == filename:
                     file_changed = True
                     if status == "A":
-                        subprocess.run(["git", "add", filename], cwd=self.repo_dir)
-                        print(colored(f"ファイル {filename} を追加しました。", "green"))
+                        self.stage_file(filename, "added")
                     elif status == "D":
-                        subprocess.run(["git", "rm", filename], cwd=self.repo_dir)
-                        print(colored(f"ファイル {filename} を削除しました。", "red"))
+                        self.stage_file(filename, "deleted")
                     else:  # Modified or other changes
-                        subprocess.run(["git", "add", filename], cwd=self.repo_dir)
-                        print(colored(f"ファイル {filename} を変更しました。", "yellow"))
+                        self.stage_file(filename, "modified")
 
-            # コミット処理
             if file_changed:
-                subprocess.run(["git", "commit", "-m", commit_message], cwd=self.repo_dir)
-                print(colored("変更をコミットしました。", "green"))
+                self.commit_changes(commit_message)
             else:
                 print(colored(f"ファイル {filename} に変更はありませんでした。", "magenta"))
 
         except subprocess.CalledProcessError as e:
             print(colored(f"Git コマンドの実行中にエラーが発生しました: {e}", "red"))
+
+    def stage_file(self, filename, action):
+        try:
+            if action == "deleted":
+                subprocess.run(["git", "rm", filename], cwd=self.repo_dir)
+                print(colored(f"ファイル {filename} を削除しました。", "red"))
+            else:
+                subprocess.run(["git", "add", filename], cwd=self.repo_dir)
+                print(colored(f"ファイル {filename} を{action}しました。", "green"))
+        except subprocess.CalledProcessError as e:
+            print(colored(f"ファイルのステージング中にエラーが発生しました: {e}", "red"))
+
+    def commit_changes(self, commit_message):
+        try:
+            subprocess.run(["git", "commit", "-m", commit_message], cwd=self.repo_dir)
+            print(colored("変更をコミットしました。", "green"))
+        except subprocess.CalledProcessError as e:
+            print(colored(f"変更のコミット中にエラーが発生しました: {e}", "red"))
 
     def push_to_remote(self):
         origin = self.repo.remote("origin")
