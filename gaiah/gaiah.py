@@ -33,7 +33,7 @@ class Gaiah:
             filename_match = re.search(r'(?m)^###\s(.+)', commit)
             if filename_match:
                 filename = filename_match.group(1).strip()
-                print(colored(f"ファイル {filename} を処理中...", "blue"))
+                print(colored(f"ファイル [{filename}] を処理中...", "blue"))
             else:
                 print(colored("エラー: コミットセクションにファイル名が見つかりません。", "red"))
                 continue
