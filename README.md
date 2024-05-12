@@ -37,19 +37,15 @@
 
 ## 🌟 はじめに
 
-Gaiahは、直感的でAIにやさしいメソッドを使用してGit操作を簡素化する革新的なPythonライブラリです。Gitリポジトリを制御するための高レベルなインターフェースを提供し、AIシステムがバージョン管理とシームレスに連携することを容易にします。
-
-Gaiahを使用すると、リポジトリの作成、変更のコミット、リモートリポジトリへの更新のプッシュなど、さまざまなGitタスクを自動化できます。
+Gaiahは、直感的でAIにやさしいメソッドを使用してGit操作を簡素化する革新的なPythonライブラリです。Gitリポジトリを制御するための高レベルなインターフェースを提供し、AIシステムがバージョン管理とシームレスに連携することを容易にします。新機能としてMarkdownから直接コミットを生成する機能が追加され、文書化されたコミットメッセージの管理がさらに効率的に行えます。
 
 ## 🚀 主な特徴
 
-- 🤖 **AIフレンドリー**: このライブラリは、AI主導の開発プロセスの独自の要件に対応するメソッドとユーティリティを提供し、AIを念頭に置いて設計されています。
-
-- 🌐 **リモートリポジトリのサポート**: Gaiahは、リモートリポジトリとのシームレスな連携を可能にし、AIシステムがGitHubやその他のGitホスティングプラットフォームにリポジトリを作成、クローン、プッシュできるようにします。
-
-- 📂 **リポジトリ管理**: Gaiahを使用すると、シンプルなPythonコードを介して、新しいリポジトリの初期化、ファイルの追加、コミットの作成、ブランチの管理を簡単に行うことができます。
-
-- 🔧 **カスタマイズ**: このライブラリは、柔軟性とカスタマイズオプションを提供し、特定のニーズと設定に合わせてGitワークフローを調整できます。
+- 🤖 **AIフレンドリー**: AI主導の開発プロセスの独自の要件に対応するメソッドとユーティリティを提供し、AIを念頭に置いて設計されています。
+- 🌐 **リモートリポジトリのサポート**: リモートリポジトリとのシームレスな連携を可能にし、GitHubやその他のGitホスティングプラットフォームにリポジトリを作成、クローン、プッシュできるようにします。
+- 📂 **リポジトリ管理**: 新しいリポジトリの初期化、ファイルの追加、コミットの作成、ブランチの管理をシンプルなPythonコードを介して簡単に行うことができます。
+- 🔧 **カスタマイズ**: 柔軟性とカスタマイズオプションを提供し、特定のニーズと設定に合わせてGitワークフローを調整できます。
+- 📘 **Markdownからのコミット生成**: Markdown形式のドキュメントから直接コミットを生成する機能を追加し、文書化されたコミットメッセージの効率的な管理を可能にします。
 
 ## 📦 インストール
 
@@ -59,49 +55,25 @@ Gaiahの使用を開始するには、次の手順に従ってください:
    ```
    conda create -n gaiah python=3.11
    ```
-
 2. conda環境をアクティベートします:
    ```
    conda activate gaiah
    ```
-
 3. 必要な依存関係をインストールします:
    ```
-   pip install gitpython
-   pip install python-dotenv
-   pip install PyGithub
+   pip install gitpython python-dotenv PyGithub termcolor art
    ```
 
 ## 🎉 使用方法
 
-Gaiahは、一般的なGit操作を実行するための簡単で直感的なメソッドを提供します。いくつかの例を以下に示します:
+### CLI
 
-1. 新しいリポジトリを初期化する:
-   ```python
-   from gaiah import Gaiah
+GaiahのCLI機能に
 
-   repo_dir = "path/to/repository"
-   gaiah = Gaiah(repo_dir)
-   gaiah.init()
-   ```
-
-2. リモートリポジトリを作成する:
-   ```python
-   gaiah.create_remote_repo("Gaiah_Sample", "サンプルリポジトリ")
-   ```
-
-3. ファイルを追加し、変更をコミットする:
-   ```python
-   gaiah.add_file("README.md", "# サンプルリポジトリ")
-   gaiah.commit("README.mdを追加")
-   ```
-
-4. 変更をリモートリポジトリにプッシュする:
-   ```python
-   gaiah.push()
-   ```
-
-詳細な使用方法と例については、[ドキュメント](https://gaiah.readthedocs.io)を参照してください。
+より、コマンドラインから直接Git操作を行うことができます。例えば、以下のコマンドを使用してリポジトリにコミットを追加することができます:
+```
+gaiah --repo_dir="C:\\Prj\\Gaiah_Sample02" --commit_msg_path=./tmp2.md
+```
 
 ## 🤝 貢献
 
@@ -118,6 +90,8 @@ Gaiahは、以下のライブラリの優れた機能に基づいて構築され
 - [GitPython](https://github.com/gitpython-developers/GitPython)
 - [python-dotenv](https://github.com/theskumar/python-dotenv)
 - [PyGithub](https://github.com/PyGithub/PyGithub)
+- [termcolor](https://pypi.org/project/termcolor/)
+- [art](https://pypi.org/project/art/)
 
 これらのプロジェクトの開発者とコントリビューターの皆様が、オープンソースコミュニティに貴重な貢献をしてくださったことに感謝します。
 
