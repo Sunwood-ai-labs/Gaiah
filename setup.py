@@ -14,7 +14,7 @@ setup(
     name='gaiah',
     
     # パッケージのバージョン
-    version="0.1.0",
+    version="0.2.0",
     
     # パッケージに含めるモジュールを自動的に探す
     packages=find_packages(),
