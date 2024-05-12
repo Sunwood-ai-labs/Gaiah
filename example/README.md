@@ -1,7 +1,7 @@
 
 
 <p align="center">
-<img src="https://media.githubusercontent.com/media/Sunwood-ai-labs/Gaiah/main/docs/example_icon.png" width="100%">
+<img src="https://huggingface.co/datasets/MakiAi/IconAssets/resolve/main/Gaiah_example_icon.png" width="100%">
 </p>
 
 # Gaiah サンプルドキュメント
