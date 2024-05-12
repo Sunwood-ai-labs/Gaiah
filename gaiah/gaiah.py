@@ -80,9 +80,14 @@ class Gaiah:
 
     def process_file(self, filename, commit_message):
         diff_index = self.repo.index.diff(None)
-
+        print(diff_index)
+        # diff_index = self.repo.index.diff(None)
+        # print(diff_index)
+        # raise
         file_changed = False
         for diff in diff_index:
+            print(diff.a_path)
+            print("-------------------------")
             if diff.a_path == filename:
                 file_changed = True
                 if diff.change_type == "A":
