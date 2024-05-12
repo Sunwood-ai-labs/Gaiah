@@ -109,7 +109,7 @@ class Gaiah:
             # git diff コマンドを実行
             result = subprocess.run(
                 ["git", "diff", "--name-status", "HEAD"],
-                cwd=self.repo_path,
+                cwd=self.repo_dir,
                 text=True,
                 capture_output=True,
                 check=True
@@ -126,18 +126,18 @@ class Gaiah:
                 if path == filename:
                     file_changed = True
                     if status == "A":
-                        subprocess.run(["git", "add", filename], cwd=self.repo_path)
+                        subprocess.run(["git", "add", filename], cwd=self.repo_dir)
                         print(colored(f"ファイル {filename} を追加しました。", "green"))
                     elif status == "D":
-                        subprocess.run(["git", "rm", filename], cwd=self.repo_path)
+                        subprocess.run(["git", "rm", filename], cwd=self.repo_dir)
                         print(colored(f"ファイル {filename} を削除しました。", "red"))
                     else:  # Modified or other changes
-                        subprocess.run(["git", "add", filename], cwd=self.repo_path)
+                        subprocess.run(["git", "add", filename], cwd=self.repo_dir)
                         print(colored(f"ファイル {filename} を変更しました。", "yellow"))
 
             # コミット処理
             if file_changed:
-                subprocess.run(["git", "commit", "-m", commit_message], cwd=self.repo_path)
+                subprocess.run(["git", "commit", "-m", commit_message], cwd=self.repo_dir)
                 print(colored("変更をコミットしました。", "green"))
             else:
                 print(colored(f"ファイル {filename} に変更はありませんでした。", "magenta"))
