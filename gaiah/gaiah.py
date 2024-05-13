@@ -40,28 +40,13 @@ class Gaiah:
         print(colored("リポジトリオブジェクトが作成されました。", "cyan"))
         print(colored(f"現在のブランチ: {self.current_branch}", "cyan"))
 
-    def unstage_files(self):
-        """
-        ステージにある全てのファイルをアンステージする
-        """
-        msg = "-" * 20 + " unstage " + "-" * 20
-        print(colored(f"{msg}", "green"))
 
-        diff_index = self.repo.index.diff("HEAD")
-        staged_files = [diff.a_path for diff in diff_index]
-        if staged_files:
-            for file_path in staged_files:
-                try:
-                    subprocess.run(["git", "reset", "HEAD", file_path], check=True, cwd=self.repo_dir)
-                    print(colored(f"ファイル {file_path} がアンステージされました。", "green"))
-                except subprocess.CalledProcessError as e:
-                    print(colored(f"アンステージエラー: {e}", "red"))
-                    return False
-        else:
-            print(colored("ステージされたファイルはありません。", "magenta"))
-
-        print(colored(f"-" * len(msg), "green"))
-        return True
+    def unstage_file(self, filename):
+        try:
+            subprocess.run(["git", "reset", "HEAD", filename], cwd=self.repo_dir)
+            print(colored(f"ファイル {filename} がアンステージされました。", "green"))
+        except subprocess.CalledProcessError as e:
+            print(colored(f"アンステージエラー: {e}", "red"))
 
     def process_commits(self):
         try:
@@ -99,33 +84,30 @@ class Gaiah:
 
         self.push_to_remote()
 
+
     def process_file(self, filename, commit_message):
         try:
+            # ファイルのアクションを実行
+            if os.path.exists(os.path.join(self.repo_dir, filename)):
+                self.stage_file(filename, "modified")
+            else:
+                self.stage_file(filename, "deleted")
+
+            # 差分を確認
             result = subprocess.run(
-                ["git", "diff", "--name-status", "HEAD"],
+                ["git", "diff", "--staged", "--name-only"],
                 cwd=self.repo_dir,
                 text=True,
                 capture_output=True,
                 check=True
             )
 
-            lines = result.stdout.splitlines()
-            file_changed = False
-            for line in lines:
-                status, path = line.split(maxsplit=1)
-                if path == filename:
-                    file_changed = True
-                    if status == "A":
-                        self.stage_file(filename, "added")
-                    elif status == "D":
-                        self.stage_file(filename, "deleted")
-                    else:  # Modified or other changes
-                        self.stage_file(filename, "modified")
-
-            if file_changed:
+            changed_files = result.stdout.splitlines()
+            if filename in changed_files:
                 self.commit_changes(commit_message)
             else:
                 print(colored(f"ファイル {filename} に変更はありませんでした。", "magenta"))
+                self.unstage_file(filename)
 
         except subprocess.CalledProcessError as e:
             print(colored(f"Git コマンドの実行中にエラーが発生しました: {e}", "red"))
