@@ -13,8 +13,8 @@ def get_version():
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-with open('gaiah/requirements.txt') as f:
-    requirements = f.read().splitlines()
+# with open('gaiah/requirements.txt') as f:
+#     requirements = f.read().splitlines()
 
 setup(
     name='gaiah',
@@ -32,14 +32,14 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/your_username/gaiah",
-    install_requires=requirements,
-    # install_requires=[
-    #         'gitpython',
-    #         'python-dotenv',
-    #         'PyGithub',
-    #         'termcolor',
-    #         'art',
-    #     ],
+    # install_requires=requirements,
+    install_requires=[
+            'gitpython',
+            'python-dotenv',
+            'PyGithub',
+            'termcolor',
+            'art',
+        ],
     entry_points={
         'console_scripts': [
             'gaiah=gaiah.cli:main',
