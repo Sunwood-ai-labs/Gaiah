@@ -35,14 +35,14 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/your_username/gaiah",
     # install_requires=requirements,
-    install_requires=get_requirements(),
-    # install_requires=[
-    #         'gitpython',
-    #         'python-dotenv',
-    #         'PyGithub',
-    #         'termcolor',
-    #         'art',
-    #     ],
+    # install_requires=get_requirements(),
+    install_requires=[
+            'gitpython',
+            'python-dotenv',
+            'PyGithub',
+            'termcolor',
+            'art',
+        ],
     entry_points={
         'console_scripts': [
             'gaiah=gaiah.cli:main',
