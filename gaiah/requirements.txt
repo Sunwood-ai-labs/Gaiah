@@ -1,5 +1,0 @@
-gitpython
-python-dotenv
-PyGithub
-termcolor
-art
