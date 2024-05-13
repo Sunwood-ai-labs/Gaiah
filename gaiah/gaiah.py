@@ -41,12 +41,35 @@ class Gaiah:
         print(colored(f"現在のブランチ: {self.current_branch}", "cyan"))
 
 
-    def unstage_file(self, filename):
+    def unstage_files(self):
+        """
+        ステージにある全てのファイルをアンステージする
+        """
+        msg = "-" * 20 + " unstage " + "-" * 20
+        print(colored(f"{msg}", "green"))
+
         try:
-            subprocess.run(["git", "reset", "HEAD", filename], cwd=self.repo_dir)
-            print(colored(f"ファイル {filename} がアンステージされました。", "green"))
+            result = subprocess.run(
+                ["git", "diff", "--name-only", "--cached"],
+                cwd=self.repo_dir,
+                text=True,
+                capture_output=True,
+                check=True
+            )
+            staged_files = result.stdout.splitlines()
+
+            if staged_files:
+                subprocess.run(["git", "reset", "HEAD", "--"] + staged_files, cwd=self.repo_dir)
+                print(colored(f"ステージされたファイルをアンステージしました: {', '.join(staged_files)}", "green"))
+            else:
+                print(colored("ステージされたファイルはありません。", "magenta"))
+
         except subprocess.CalledProcessError as e:
             print(colored(f"アンステージエラー: {e}", "red"))
+            return False
+
+        print(colored(f"-" * len(msg), "green"))
+        return True
 
     def process_commits(self):
         try:
@@ -59,6 +82,9 @@ class Gaiah:
         except UnicodeDecodeError:
             print(colored(f"エラー: {self.commit_messages_path} のデコードに失敗しました。ファイルがUTF-8で保存されていることを確認してください。", "red"))
             return
+
+        # すべてのファイルをアンステージ
+        self.unstage_files()
 
         commits = re.split(self.COMMIT_SECTION_REGEX, content)[1:]
 
@@ -83,7 +109,6 @@ class Gaiah:
             self.process_file(filename, commit_message)
 
         self.push_to_remote()
-
 
     def process_file(self, filename, commit_message):
         try:
