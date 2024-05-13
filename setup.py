@@ -19,7 +19,7 @@ def get_requirements():
         return requirements
 
 setup(
-    name='gaiah',
+    name='gaiah_toolkit',
     version=get_version(),
     packages=find_packages(),
     classifiers=[
