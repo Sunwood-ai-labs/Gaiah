@@ -83,7 +83,7 @@ gaiah --repo_dir="C:\\Prj\\Gaiah_Sample02" --commit_msg_path=./tmp2.md
 ### リポジトリの初期化
 
 ```bash
-gaiah --create_repo --repo_name Gaiah_Sample03 --description "Gaiah_Sample03 repo" --init_repo --repo_dir C:\Prj\Gaiah_Sample03 --process_commits --commit_msg_path .Gaiah.md
+gaiah --create_repo --repo_name Gaiah_Sample05 --description "Gaiah_Sample05 repo" --init_repo --repo_dir C:\Prj\Gaiah_Sample\Gaiah_Sample05 --process_commits --commit_msg_path .Gaiah.md
 ```
 
 ## 処理フロー
