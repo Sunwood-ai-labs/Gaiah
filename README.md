@@ -80,6 +80,44 @@ gaiah
 gaiah --repo_dir="C:\\Prj\\Gaiah_Sample02" --commit_msg_path=./tmp2.md
 ```
 
+### リポジトリの初期化
+
+```bash
+gaiah --create_repo --repo_name Gaiah_Sample05 --description "Gaiah_Sample05 repo" --init_repo --repo_dir C:\Prj\Gaiah_Sample\Gaiah_Sample05 --process_commits --commit_msg_path .Gaiah.md
+```
+
+## 処理フロー
+
+```mermaid
+
+graph TD
+   A[ユーザーがCLIを実行] --> B{コマンドライン引数を解析}
+   B --> C{Gaiahオブジェクトを作成}
+   C --> D{--create_repoオプションが指定されている?}
+   D -->|Yes| E[新しいリポジトリをGitHub上に作成]
+   E --> E1[.envファイルから環境変数を読み込む]
+   E1 --> E2[環境変数からアクセストークンを取得]
+   E2 --> E3[GitHubオブジェクトを作成]
+   E3 --> E4[リポジトリ名とパラメータを指定]
+   E4 --> E5[GitHub上に新しいリポジトリを作成]
+   E5 --> E6[リポジトリ作成完了のメッセージを表示]
+   E6 --> Q[処理完了]
+   D -->|No| F{--process_commitsオプションが指定されている?}
+   F -->|Yes| G[コミットメッセージファイルからコミットを処理]
+   G --> H[すべてのファイルをアンステージ]
+   H --> I{コミットセクションごとに処理}
+   I --> J{ファイル名とコミットメッセージを取得}
+   J --> K{ファイルを処理}
+   K --> L{ファイルをステージ}
+   L --> M{変更をコミット}
+   M --> N{次のコミットセクションがある?}
+   N -->|Yes| I
+   N -->|No| O[リモートリポジトリにプッシュ]
+   O --> P[処理完了]
+   F -->|No| Q[処理完了]
+
+```
+
 ## 🤝 貢献
 
 Gaiahをさらに良くするために、コミュニティからの貢献を歓迎します。アイデア、提案、バグ報告がある場合は、[GitHubリポジトリ](https://github.com/Sunwood-ai-labs/Gaiah)で issue を開くか、プルリクエストを送信してください。
