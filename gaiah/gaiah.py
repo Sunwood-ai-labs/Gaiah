@@ -27,6 +27,11 @@ class Gaiah:
                 pass
             print(colored(f"空の {commit_messages_path} ファイルを作成しました。", "yellow"))
         
+        try:
+            self.current_branch = self.run_command(["git", "rev-parse", "--abbrev-ref", "HEAD"])
+            print(colored(f"現在のブランチ: {self.current_branch}", "cyan"))
+        except:
+            print(colored(f"現在のブランチを取得できません。", "red"))
         # if repo_dir:
         #     self.initialize_repository()
         # else:
