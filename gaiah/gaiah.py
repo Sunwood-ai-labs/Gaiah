@@ -4,7 +4,8 @@ import subprocess
 from dotenv import load_dotenv
 from github import Github
 from termcolor import colored
-
+import shutil
+import time
 class Gaiah:
     """
     Gaiahクラス - Gitリポジトリの管理を行う
@@ -18,13 +19,19 @@ class Gaiah:
         コンストラクタ
         """
         self.repo_dir = repo_dir
-        self.commit_messages_path = commit_messages_path
+        self.commit_messages_path = os.path.join(repo_dir, commit_messages_path) if commit_messages_path else None
         os.makedirs(repo_dir, exist_ok=True)
-        if repo_dir:
-            self.initialize_repository()
-        else:
-            self.repo_dir = None
-            self.current_branch = None
+        
+        if self.commit_messages_path and not os.path.exists(self.commit_messages_path):
+            with open(self.commit_messages_path, 'w') as f:
+                pass
+            print(colored(f"空の {commit_messages_path} ファイルを作成しました。", "yellow"))
+        
+        # if repo_dir:
+        #     self.initialize_repository()
+        # else:
+        #     self.repo_dir = None
+        #     self.current_branch = None
 
     def initialize_repository(self):
         """
@@ -39,75 +46,85 @@ class Gaiah:
             print(colored(f"{self.repo_dir} はGitリポジトリではありません。", "red"))
             print(colored("リポジトリを初期化します...", "yellow"))
             self.init_repo(self.repo_dir)
+            self.current_branch = "main"  # デフォルトのブランチ名を設定
 
     def init_repo(self, repo_dir, initial_commit=True):
         """
         新しいリポジトリを初期化する
         """
-        # フォルダが存在しない場合は作成する
         if not os.path.exists(repo_dir):
             os.makedirs(repo_dir)
             print(colored(f"ディレクトリ '{repo_dir}' を作成しました。", "green"))
-            print(colored(f"実行コマンド: mkdir {repo_dir}", "yellow"))
 
-        # Gitリポジトリを初期化
         self.run_command(["git", "init"], cwd=repo_dir)
-        print(colored(f"リポジトリ '{repo_dir}' を初期化しました。", "green"))
-        print(colored(f"実行コマンド: git init", "yellow"))
-        
-        # ユーザー名とメールアドレスを設定
         self.run_command(["git", "config", "user.name", "Maki"], cwd=repo_dir)
         self.run_command(["git", "config", "user.email", "sunwood.ai.labs@gmail.com"], cwd=repo_dir)
 
-        # リモートリポジトリのURLを取得
         load_dotenv()
         access_token = os.getenv("GITHUB_ACCESS_TOKEN")
         repo_name = os.path.basename(repo_dir)
         remote_url = f"https://{access_token}@github.com/Sunwood-ai-labs/{repo_name}.git"
 
-        # 新しいリモートを作成
-        self.run_command(["git", "remote", "add", "origin", remote_url], cwd=repo_dir)
-        print(colored(f"リモートリポジトリ '{remote_url}' を追加しました。", "green"))
-        
-        if initial_commit:
-            # ファイルをインデックスに追加
-            file_path = os.path.join(repo_dir, "sample.txt")
-            open(file_path, "w").close()  # 空のファイルを作成
-            self.run_command(["git", "add", file_path], cwd=repo_dir)
-            print(colored(f"ファイル '{file_path}' をインデックスに追加しました。", "green"))
-
-            # 変更をコミット
-            self.run_command(["git", "commit", "-m", "Initial commit"], cwd=repo_dir)
-            print(colored("初期コミットを作成しました。", "green"))
+        try:
+            self.run_command(["git", "remote", "add", "origin", remote_url], cwd=repo_dir)
+            print(colored(f"リモートリポジトリ '{remote_url}' を追加しました。", "green"))
+        except:
+            print(colored(f"リモートリポジトリ '{remote_url}' は登録済です。", "green"))
             
-        # mainブランチの名前を設定
-        self.run_command(["git", "branch", "-M", "main"], cwd=repo_dir)
-        print(colored("mainブランチの名前を 'main' に設定しました。", "green"))
+        if initial_commit:
+            readme_path = os.path.join(repo_dir, "README.md")
+            demo_readme_path = os.path.join(os.path.dirname(__file__), "template", "DEMO_README.md")
+            shutil.copy(demo_readme_path, readme_path)
+            self.run_command(["git", "add", "README.md"], cwd=repo_dir)
 
-        new_branch = "main"
-        # リモートリポジトリにプッシュ
-        self.run_command(["git", "push", "-f", "origin", new_branch], cwd=repo_dir)
-        print(colored(f"リモートリポジトリにブランチ '{new_branch}' をプッシュしました。", "green"))
+            readme_path = os.path.join(repo_dir, ".gitignore")
+            demo_readme_path = os.path.join(os.path.dirname(__file__), "template", ".gitignore")
+            shutil.copy(demo_readme_path, readme_path)
+            self.run_command(["git", "add", ".gitignore"], cwd=repo_dir)
+            print(colored(f"ファイル '.gitignore' をインデックスに追加しました。", "green"))
+
+            # mainブランチの名前を設定
+            self.run_command(["git", "branch", "-M", "main"], cwd=repo_dir)
+            print(colored("mainブランチの名前を 'main' に設定しました。", "green"))
+
+            self.current_branch = "main"  # デフォルトのブランチ名を設定
+
+            self.run_command(["git", "commit", "-m", "Initial commit"], cwd=repo_dir)
+            try:
+                self.run_command(["git", "push", "-u", "origin", "main"], cwd=repo_dir)
+            except:
+                self.run_command(["git", "push", "-f", "origin", "main"], cwd=repo_dir)
+            print(colored("初期コミットをリモートリポジトリにプッシュしました。", "green"))
+
+        self.current_branch = "main"
 
     def create_repo(self, repo_name, repo_params):
         """
         新しいリポジトリをGitHub上に作成する
         """
         try:
-            # .envファイルから環境変数を読み込む
             load_dotenv()
-
-            # 環境変数からアクセストークンを取得
             access_token = os.getenv("GITHUB_ACCESS_TOKEN")
-
-            # GitHubオブジェクトの作成
             g = Github(access_token)
-
-            # リポジトリを作成
             repo = g.get_user().create_repo(repo_name, **repo_params)
             print(colored(f"リポジトリ '{repo_name}' が作成されました。", "green"))
+            time.sleep(2)
+            
         except Exception as e:
             print(colored(f"リポジトリの作成中にエラーが発生しました: {e}", "red"))
+
+    def process_commits(self):
+        """
+        コミットメッセージファイルからコミットを処理する
+        """
+        # コミット処理の実装をここに記述します
+        pass
+
+    def run_command(self, command, cwd=None, check=True, capture_output=True):
+        print(colored(f"実行コマンド: {' '.join(command)}", "yellow"))
+        result = subprocess.run(command, cwd=cwd or self.repo_dir, check=check, capture_output=capture_output, text=True, encoding='utf-8')
+        return result.stdout.strip() if capture_output else None
+
 
     def unstage_files(self):
         """
@@ -147,7 +164,6 @@ class Gaiah:
             print(colored(f"エラー: {self.commit_messages_path} のデコードに失敗しました。ファイルがUTF-8で保存されていることを確認してください。", "red"))
             return
 
-        # すべてのファイルをアンステージ
         self.unstage_files()
 
         commits = re.split(self.COMMIT_SECTION_REGEX, content)[1:]
@@ -185,13 +201,11 @@ class Gaiah:
         ファイルを処理する
         """
         try:
-            # ファイルのアクションを実行
             if os.path.exists(os.path.join(self.repo_dir, filename)):
                 self.stage_file(filename, "modified")
             else:
                 self.stage_file(filename, "deleted")
 
-            # 差分を確認
             changed_files = self.run_command(["git", "diff", "--staged", "--name-only"]).splitlines()
 
             if filename in changed_files:
@@ -218,12 +232,12 @@ class Gaiah:
             print(colored(f"ファイルのステージング中にエラーが発生しました: {e}", "red"))
 
     def commit_changes(self, commit_message):
+        """
+        変更をコミットする
+        """
         try:
-            result = self.run_command(["git", "commit", "-m", commit_message])
-            if result:
-                print(colored("変更をコミットしました。", "green"))
-            else:
-                print(colored("コミットするファイルがありません。", "yellow"))
+            self.run_command(["git", "commit", "-m", commit_message])
+            print(colored("変更をコミットしました。", "green"))
         except subprocess.CalledProcessError as e:
             print(colored(f"変更のコミット中にエラーが発生しました: {e}", "red"))
 
@@ -240,8 +254,3 @@ class Gaiah:
         print(colored("-" * 60, "red"))
         print(colored(f"すべてのファイルの更新、コミット、プッシュが完了しました。\n現在のブランチ: {self.current_branch}", "red"))
         print(colored("-" * 60, "red"))
-
-    def run_command(self, command, cwd=None, check=True, capture_output=True):
-        print(colored(f"実行コマンド: {' '.join(command)}", "yellow"))
-        result = subprocess.run(command, cwd=cwd or self.repo_dir, check=check, capture_output=capture_output, text=True, encoding='utf-8')
-        return result.stdout.strip() if capture_output else None
