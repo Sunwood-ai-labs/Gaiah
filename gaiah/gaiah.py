@@ -218,12 +218,12 @@ class Gaiah:
             print(colored(f"ファイルのステージング中にエラーが発生しました: {e}", "red"))
 
     def commit_changes(self, commit_message):
-        """
-        変更をコミットする
-        """
         try:
-            self.run_command(["git", "commit", "-m", commit_message])
-            print(colored("変更をコミットしました。", "green"))
+            result = self.run_command(["git", "commit", "-m", commit_message])
+            if result:
+                print(colored("変更をコミットしました。", "green"))
+            else:
+                print(colored("コミットするファイルがありません。", "yellow"))
         except subprocess.CalledProcessError as e:
             print(colored(f"変更のコミット中にエラーが発生しました: {e}", "red"))
 
@@ -242,9 +242,6 @@ class Gaiah:
         print(colored("-" * 60, "red"))
 
     def run_command(self, command, cwd=None, check=True, capture_output=True):
-        """
-        コマンドを実行する
-        """
         print(colored(f"実行コマンド: {' '.join(command)}", "yellow"))
-        result = subprocess.run(command, cwd=cwd or self.repo_dir, check=check, capture_output=capture_output, text=True)
+        result = subprocess.run(command, cwd=cwd or self.repo_dir, check=check, capture_output=capture_output, text=True, encoding='utf-8')
         return result.stdout.strip() if capture_output else None
