@@ -42,6 +42,9 @@ def main():
         }
         gaiah.create_repo(args.repo_name, repo_params)
 
+    if args.init_repo:
+        gaiah.init_repo(args.repo_dir, not args.no_initial_commit)
+
     if args.process_commits:
         gaiah.process_commits()
 
