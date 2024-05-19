@@ -1,5 +1,7 @@
 import subprocess
 from loguru import logger
+import time
+from tqdm import tqdm
 
 def run_command(command, cwd=None, check=True):
     """
@@ -13,4 +15,7 @@ def run_command(command, cwd=None, check=True):
         error_message = e.stderr.strip()
         logger.error(f"Error while running command: {' '.join(command)}")
         logger.error(f"Error message: {error_message}")
-        raise
+
+def tqdm_sleep(n):
+    for _ in tqdm(range(n)):
+        time.sleep(1)
