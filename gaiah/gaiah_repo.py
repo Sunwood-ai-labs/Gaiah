@@ -180,8 +180,8 @@ class GaiahRepo:
             logger.success(f"Deleted local branch: {branch_name}")
 
             # リモートブランチを削除
-            run_command(["git", "push", "origin", "--delete", branch_name], cwd=self.repo_dir)
-            logger.success(f"Deleted remote branch: {branch_name}")
+            # run_command(["git", "push", "origin", "--delete", branch_name], cwd=self.repo_dir)
+            # logger.success(f"Deleted remote branch: {branch_name}")
 
         except Exception as e:
             logger.error(f"Error while deleting branch {branch_name}: {e}")
