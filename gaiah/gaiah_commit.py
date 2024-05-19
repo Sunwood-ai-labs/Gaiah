@@ -63,10 +63,11 @@ class GaiahCommit:
             with open(self.repo.commit_messages_path, "r", encoding="utf-8") as file:
                 content = file.read()
         except FileNotFoundError:
-            self.logger.error(f"Commit messages file not found: {self.repo.commit_messages_path}")
-            raise
-
-        self.unstage_files()
+            self.logger.warning(f"Commit messages file not found: {self.repo.commit_messages_path}")
+            self.logger.info(f"Creating an empty commit messages file: {self.repo.commit_messages_path}")
+            with open(self.repo.commit_messages_path, "w", encoding="utf-8") as file:
+                file.write("")
+            return
 
         commits = re.split(self.FILENAME_REGEX, content)[1:]
         for i in range(0, len(commits), 2):
@@ -74,7 +75,9 @@ class GaiahCommit:
             commit_message_section = commits[i + 1]
             self.process_commit_section(filename, commit_message_section)
 
-        self.repo.push_to_remote()
+        self.repo.push_to_remote(branch_name="develop")
+
+
 
     def process_commit_section(self, filename, commit_message_section):
         """
