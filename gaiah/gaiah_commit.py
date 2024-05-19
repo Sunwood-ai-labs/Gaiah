@@ -141,7 +141,7 @@ class GaiahCommit:
 
             if filename in changed_files:
                 self.commit_changes(commit_message, branch_name)
-                self.repo.push_to_remote(branch_name=branch_name)
+                # self.repo.push_to_remote(branch_name=branch_name)
             else:
                 self.logger.info(f"No changes detected in file: {filename}")
                 self.unstage_files()
