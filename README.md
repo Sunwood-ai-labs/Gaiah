@@ -81,43 +81,52 @@ gaiah
 gaiah --repo_dir="C:\\Prj\\Gaiah_Sample02" --commit_msg_path=./tmp2.md
 ```
 
-上記のコマンドでは、`--repo_dir`オプションでリポジトリのディレクトリを、`--commit_msg_path`オプションでコミットメッセージが記載されたMarkdownファイルのパスを指定しています。
+### リポジトリの初期化
 
-## 🤝 コミットメッセージの一括自動コミット
+```bash
+gaiah --create_repo --repo_name Gaiah_Sample05 --description "Gaiah_Sample05 repo" --init_repo --repo_dir C:\Prj\Gaiah_Sample\Gaiah_Sample05 --process_commits --commit_msg_path .Gaiah.md
+```
 
-Gaiahでは、LLMを用いて生成したコミットメッセージを一括自動コミットすることができます。以下の手順でコミットメッセージを生成し、コミットを行います:
+## 処理フロー
 
-1. [sourcesage/config/STAGE_INFO/STAGE_INFO_TEMPLATE_GAIAH.md](https://github.com/Sunwood-ai-labs/SourceSage/blob/main/sourcesage/config/STAGE_INFO/STAGE_INFO_TEMPLATE_GAIAH.md)というフォーマットで、ステージング情報をLLMに渡します。
+```mermaid
 
-2. LLMは以下のような形式でコミットメッセージを生成します:
+graph TD
+   A[ユーザーがCLIを実行] --> B{コマンドライン引数を解析}
+   B --> C{Gaiahオブジェクトを作成}
+   C --> D{--create_repoオプションが指定されている?}
+   D -->|Yes| E[新しいリポジトリをGitHub上に作成]
+   E --> E1[.envファイルから環境変数を読み込む]
+   E1 --> E2[環境変数からアクセストークンを取得]
+   E2 --> E3[GitHubオブジェクトを作成]
+   E3 --> E4[リポジトリ名とパラメータを指定]
+   E4 --> E5[GitHub上に新しいリポジトリを作成]
+   E5 --> E6[リポジトリ作成完了のメッセージを表示]
+   E6 --> Q[処理完了]
+   D -->|No| F{--process_commitsオプションが指定されている?}
+   F -->|Yes| G[コミットメッセージファイルからコミットを処理]
+   G --> H[すべてのファイルをアンステージ]
+   H --> I{コミットセクションごとに処理}
+   I --> J{ファイル名とコミットメッセージを取得}
+   J --> K{ファイルを処理}
+   K --> L{ファイルをステージ}
+   L --> M{変更をコミット}
+   M --> N{次のコミットセクションがある?}
+   N -->|Yes| I
+   N -->|No| O[リモートリポジトリにプッシュ]
+   O --> P[処理完了]
+   F -->|No| Q[処理完了]
 
-   ```
-   Commit Messages フォーマット
+```
 
-   ## Commit 1
+## 開発用
 
-   ### README.md
+```bash
+gaiah --repo_dir C:\Prj\Gaiah_Sample\Gaiah_Sample05 --process_commits
+```
 
-   ```commit-msg
-   📝 [docs] READMEに応用的な使い方セクションを追加
 
-   - `README.md`ファイルに新たなセクションとして「応用的な使い方」を追加しました。これにより、ユーザーはGaiahを特定のプロジェクトディレクトリで使用する方法を具体的に学べるようになります。特に、リポジトリの指定やコミットメッセージのファイルパスを設定する具体的なコマンド例を示しています。  
-   ```
 
-   ## Commit 2
-
-   ### gaiah/__init__.py
-
-   ```commit-msg
-   🔖 [chore] Gaiahのバージョンを0.3.12に更新
-
-   - `gaiah/__init__.py`でのバージョン番号を0.3.11から0.3.12へ更新しました。この更新は、最新の機能改善とバグ修正をユーザーに提供するためのものです。
-   ```
-   ```
-
-3. 生成されたコミットメッセージを`.Gaiah.md`ファイルに貼り付けます。このファイルは、初回に`gaiah`コマンドを実行した際に自動で生成されます。
-
-4. 再度`gaiah`コマンドを実行すると、`.Gaiah.md`ファイルからコミットメッセージが読み込まれ、自動的にコミットとプッシュが行われます。
 
 ## 🤝 貢献
 

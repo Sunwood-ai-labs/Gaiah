@@ -13,11 +13,6 @@ def get_version():
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-def get_requirements():
-    with open('requirements.txt') as f:
-        requirements = f.read().splitlines()
-        return requirements
-
 setup(
     name='gaiah_toolkit',
     version=get_version(),
@@ -34,8 +29,6 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/your_username/gaiah",
-    # install_requires=requirements,
-    # install_requires=get_requirements(),
     install_requires=[
             'gitpython',
             'python-dotenv',
