@@ -121,8 +121,10 @@ graph TD
 ## 開発用
 
 ```bash
-gaiah --repo_dir C:\Prj\Gaiah_Sample\Gaiah_Sample04 --process_commits
+gaiah --repo_dir C:\Prj\Gaiah_Sample\Gaiah_Sample05 --process_commits
 ```
+
+
 
 
 ## 🤝 貢献
