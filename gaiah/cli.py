@@ -2,6 +2,17 @@ import argparse
 from art import tprint
 from loguru import logger
 from gaiah.gaiah import Gaiah
+import sys
+
+logger.configure(
+    handlers=[
+        {
+            "sink": sys.stderr,
+            "format": "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level:<8}</level> | <cyan>{name:<45}:{line:<5}</cyan> | <level>{message}</level>",
+            "colorize": True,
+        }
+    ]
+)
 
 def parse_arguments():
     """
