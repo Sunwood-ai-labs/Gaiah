@@ -38,26 +38,42 @@ def parse_arguments():
 def main():
     args = parse_arguments()
 
-    tprint("!  Welcome  to  Gaiah  !")
+    tprint("!  Gaiahへようこそ  !")
 
     repo_dir = args.repo_dir if args.init_repo or args.process_commits else None
     commit_msg_path = args.commit_msg_path if args.process_commits else None
     gaiah = Gaiah(repo_dir, commit_msg_path)
+
+    if args.init_repo:
+        gaiah.init_local_repo(args.repo_dir, not args.no_initial_commit)
 
     if args.create_repo:
         repo_params = {
             'description': args.description,
             'private': args.private
         }
+        logger.info(">>> リモートリポジトリを作成しています...")
         gaiah.create_remote_repo(args.repo_name, repo_params)
-
-    if args.init_repo:
-        gaiah.init_local_repo(args.repo_dir, not args.no_initial_commit)
+        
+        logger.info(">>> ブランチを作成しています...")
+        gaiah.create_branches()
+        
+        logger.info(">>> 初期ファイルを追加しています...")
+        gaiah.add_initial_files()
+        
+        logger.info(">>> 初期ファイルをコミットしています...")
+        gaiah.commit_initial_files()
+        
+        logger.info(">>> ブランチをマージしています...")
+        gaiah.merge_branches()
+        
+        logger.info(">>> マージしたブランチをプッシュしています...")
+        gaiah.push_merged_branches()
 
     if args.process_commits:
         gaiah.process_commits()
 
-    logger.success("All operations completed successfully!")
+    logger.success("全ての操作が正常に完了しました!")
 
 if __name__ == "__main__":
     main()
