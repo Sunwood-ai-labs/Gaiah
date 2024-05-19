@@ -98,13 +98,13 @@ class GaiahCommit:
                 commit_message_section = commits[j + 1]
                 self.process_commit_section(filename, commit_message_section, branch_name)
 
-            self.repo.push_to_remote(branch_name=branch_name)
+            # self.repo.push_to_remote(branch_name=branch_name)
             
             # developブランチにマージ
             self.repo.merge_to_develop(branch_name)
             
             # マージ後のブランチを削除
-            # self.repo.delete_branch(branch_name)
+            self.repo.delete_branch(branch_name)
 
     def process_commit_section(self, filename, commit_message_section, branch_name):
         """
