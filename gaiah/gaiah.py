@@ -15,5 +15,20 @@ class Gaiah:
     def create_remote_repo(self, repo_name, repo_params):
         self.repo.create_remote_repo(repo_name, repo_params)
 
+    def add_initial_files(self):
+        self.repo.add_initial_files()
+
+    def create_branches(self):
+        self.repo.create_branches()
+
+    def commit_initial_files(self):
+        self.repo.commit_initial_files()
+
+    def merge_branches(self):
+        self.repo.merge_branches()
+
+    def push_merged_branches(self):
+        self.repo.push_merged_branches()
+
     def process_commits(self):
         self.commit.process_commits()
