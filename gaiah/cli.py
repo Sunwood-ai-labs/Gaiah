@@ -1,6 +1,6 @@
 import argparse
 from art import tprint
-from termcolor import colored
+from loguru import logger
 from gaiah.gaiah import Gaiah
 
 def parse_arguments():
@@ -23,10 +23,8 @@ def parse_arguments():
 
     return parser.parse_args()
 
+
 def main():
-    """
-    メイン処理
-    """
     args = parse_arguments()
 
     tprint("!  Welcome  to  Gaiah  !")
@@ -40,15 +38,15 @@ def main():
             'description': args.description,
             'private': args.private
         }
-        gaiah.create_repo(args.repo_name, repo_params)
+        gaiah.create_remote_repo(args.repo_name, repo_params)
 
     if args.init_repo:
-        gaiah.init_repo(args.repo_dir, not args.no_initial_commit)
+        gaiah.init_local_repo(args.repo_dir, not args.no_initial_commit)
 
     if args.process_commits:
         gaiah.process_commits()
 
-    tprint("!! successfully !!")
+    logger.success("All operations completed successfully!")
 
 if __name__ == "__main__":
     main()
