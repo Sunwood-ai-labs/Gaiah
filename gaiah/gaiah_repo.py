@@ -166,6 +166,49 @@ class GaiahRepo:
             logger.error(f"ブランチのマージ中にエラーが発生しました: {e}")
             raise
 
+    def delete_branch(self, branch_name):
+        """
+        指定されたブランチをローカルとリモートから削除する
+        """
+        try:
+            # developブランチに切り替え
+            run_command(["git", "checkout", "develop"], cwd=self.repo_dir)
+            logger.info(f"Switched to develop branch.")
+
+            # ローカルブランチを削除
+            run_command(["git", "branch", "-d", branch_name], cwd=self.repo_dir)
+            logger.success(f"Deleted local branch: {branch_name}")
+
+            # リモートブランチを削除
+            run_command(["git", "push", "origin", "--delete", branch_name], cwd=self.repo_dir)
+            logger.success(f"Deleted remote branch: {branch_name}")
+
+        except Exception as e:
+            logger.error(f"Error while deleting branch {branch_name}: {e}")
+            raise
+
+    def merge_to_develop(self, branch_name):
+        """
+        指定されたブランチの変更をdevelopブランチにマージする
+        """
+        try:
+            # developブランチに切り替え
+            run_command(["git", "checkout", "develop"], cwd=self.repo_dir)
+            logger.info(f"Switched to develop branch.")
+
+            # 指定されたブランチの変更をdevelopブランチにマージ
+            # run_command(["git", "merge", branch_name], cwd=self.repo_dir)
+            run_command(["git", "merge", "--no-ff", "-m", f"Merge {branch_name}", branch_name], cwd=self.repo_dir)
+            
+            logger.success(f"Merged {branch_name} into develop.")
+
+            # developブランチをリモートにプッシュ
+            self.push_to_remote(branch_name="develop")
+
+        except Exception as e:
+            logger.error(f"Error while merging {branch_name} into develop: {e}")
+            raise
+
     def push_merged_branches(self):
         """
         マージしたブランチをリモートリポジトリにプッシュする
