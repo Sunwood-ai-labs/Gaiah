@@ -6,13 +6,14 @@ from github import Github
 from termcolor import colored
 import shutil
 import time
+
 class Gaiah:
     """
     Gaiahクラス - Gitリポジトリの管理を行う
     """
-    COMMIT_SECTION_REGEX = r'(?m)^##\s'
     FILENAME_REGEX = r'(?m)^###\s(.+)'
     COMMIT_MESSAGE_REGEX = r'```commit-msg\n(.*?)\n```'
+    BRANCH_REGEX = r'(?m)^##\s(.+)'
 
     def __init__(self, repo_dir, commit_messages_path):
         """
@@ -32,11 +33,6 @@ class Gaiah:
             print(colored(f"現在のブランチ: {self.current_branch}", "cyan"))
         except:
             print(colored(f"現在のブランチを取得できません。", "red"))
-        # if repo_dir:
-        #     self.initialize_repository()
-        # else:
-        #     self.repo_dir = None
-        #     self.current_branch = None
 
     def initialize_repository(self):
         """
@@ -118,18 +114,11 @@ class Gaiah:
         except Exception as e:
             print(colored(f"リポジトリの作成中にエラーが発生しました: {e}", "red"))
 
-    def process_commits(self):
-        """
-        コミットメッセージファイルからコミットを処理する
-        """
-        # コミット処理の実装をここに記述します
-        pass
 
     def run_command(self, command, cwd=None, check=True, capture_output=True):
         print(colored(f"実行コマンド: {' '.join(command)}", "yellow"))
         result = subprocess.run(command, cwd=cwd or self.repo_dir, check=check, capture_output=capture_output, text=True, encoding='utf-8')
         return result.stdout.strip() if capture_output else None
-
 
     def unstage_files(self):
         """
@@ -171,26 +160,34 @@ class Gaiah:
 
         self.unstage_files()
 
-        commits = re.split(self.COMMIT_SECTION_REGEX, content)[1:]
-
-        for commit in commits:
-            self.process_commit_section(commit)
-
+        branch_sections = re.split(self.BRANCH_REGEX, content, flags=re.MULTILINE)
+        print(branch_sections)
+        for i in range(1, len(branch_sections), 2):
+            branch_name = branch_sections[i].strip()
+            print(branch_name)
+            # commit_section = branch_sections[i + 1]
+            # self.process_branch_section(branch_name, commit_section)
+        raise
+        self.merge_to_develop()
         self.push_to_remote()
 
-    def process_commit_section(self, commit_section):
+    def process_branch_section(self, branch_name, commit_section):
+        """
+        ブランチセクションを処理する
+        """
+        self.create_branch(branch_name)
+
+        commits = re.split(self.FILENAME_REGEX, commit_section)[1:]
+        for i in range(0, len(commits), 2):
+            filename = commits[i].strip()
+            commit_message_section = commits[i + 1]
+            self.process_commit_section(filename, commit_message_section)
+
+    def process_commit_section(self, filename, commit_message_section):
         """
         コミットセクションを処理する
         """
-        filename_match = re.search(self.FILENAME_REGEX, commit_section)
-        if filename_match:
-            filename = filename_match.group(1).strip()
-            print(colored(f"ファイル [{filename}] を処理中...", "blue"))
-        else:
-            print(colored("エラー: コミットセクションにファイル名が見つかりません。", "red"))
-            return
-
-        commit_message_match = re.search(self.COMMIT_MESSAGE_REGEX, commit_section, re.DOTALL)
+        commit_message_match = re.search(self.COMMIT_MESSAGE_REGEX, commit_message_section, re.DOTALL)
         if commit_message_match:
             commit_message = commit_message_match.group(1).strip()
             print(colored(f"------- コミットメッセージ: -------\n{commit_message}", "green"))
@@ -246,13 +243,37 @@ class Gaiah:
         except subprocess.CalledProcessError as e:
             print(colored(f"変更のコミット中にエラーが発生しました: {e}", "red"))
 
+    def create_branch(self, branch_name):
+        """
+        新しいブランチを作成する
+        """
+        try:
+            self.run_command(["git", "checkout", "-b", branch_name])
+            print(colored(f"新しいブランチ '{branch_name}' を作成しました。", "green"))
+            self.current_branch = branch_name
+        except subprocess.CalledProcessError as e:
+            print(colored(f"ブランチの作成中にエラーが発生しました: {e}", "red"))
+
+    def merge_to_develop(self):
+        """
+        作業中のブランチをdevelopブランチにマージする
+        """
+        try:
+            self.run_command(["git", "checkout", "develop"])
+            print(colored("developブランチにチェックアウトしました。", "green"))
+            self.run_command(["git", "merge", self.current_branch])
+            print(colored(f"ブランチ '{self.current_branch}' を 'develop' にマージしました。", "green"))
+            self.current_branch = "develop"
+        except subprocess.CalledProcessError as e:
+            print(colored(f"ブランチのマージ中にエラーが発生しました: {e}", "red"))
+
     def push_to_remote(self):
         """
         リモートリポジトリにプッシュする
         """
         try:
             self.run_command(["git", "push", "--set-upstream", "origin", self.current_branch])
-            print(colored("リモートリポジトリにプッシュしました。", "cyan"))
+            print(colored(f"ブランチ '{self.current_branch}' をリモートリポジトリにプッシュしました。", "cyan"))
         except subprocess.CalledProcessError as e:
             print(colored(f"リモートへのプッシュエラー: {e}", "red"))
 
