@@ -83,6 +83,7 @@ class GaiahCommit:
                 file.write("")
             return
 
+        self.unstage_files()
         branch_sections = re.split(r'(?m)^##\s(.+)', content)[1:]
 
         for i in range(0, len(branch_sections), 2):
