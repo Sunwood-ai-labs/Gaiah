@@ -51,18 +51,9 @@ Gaiahは、直感的でAIにやさしいメソッドを使用してGit操作を�
 
 Gaiahの使用を開始するには、次の手順に従ってください:
 
-1. 新しいconda環境を作成します:
-   ```
-   conda create -n gaiah python=3.11
-   ```
-2. conda環境をアクティベートします:
-   ```
-   conda activate gaiah
-   ```
-3. 必要な依存関係をインストールします:
-   ```
-   pip install gitpython python-dotenv PyGithub termcolor art
-   ```
+```bash
+pip install gaiah-toolkit
+```
 
 ## 🎉 使用方法
 
@@ -119,6 +110,20 @@ graph TD
 ```
 
 ## 開発用
+
+
+1. 新しいconda環境を作成します:
+   ```
+   conda create -n gaiah python=3.11
+   ```
+2. conda環境をアクティベートします:
+   ```
+   conda activate gaiah
+   ```
+3. 必要な依存関係をインストールします:
+   ```
+   pip install gitpython python-dotenv PyGithub termcolor art
+   ```
 
 ```bash
 script\activate-gaiah.bat
