@@ -105,7 +105,7 @@ class GaiahCommit:
                 self.process_commit_section(filename, commit_message_section, branch_name)
 
                 # ファイルを削除
-                run_command(["git", "rm", filename], cwd=self.repo.repo_dir)
+                # run_command(["git", "rm", filename], cwd=self.repo.repo_dir)
 
             # developブランチにマージ
             self.repo.merge_to_develop(branch_name)
