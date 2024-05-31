@@ -37,108 +37,124 @@
 
 ## 🌟 はじめに
 
-Gaiahは、直感的でAIにやさしいメソッドを使用してGit操作を簡素化する革新的なPythonライブラリです。Gitリポジトリを制御するための高レベルなインターフェースを提供し、AIシステムがバージョン管理とシームレスに連携することを容易にします。新機能としてMarkdownから直接コミットを生成する機能が追加され、文書化されたコミットメッセージの管理がさらに効率的に行えます。
+Gaiahは、初心者でも簡単に使えるPythonのライブラリです。Gitを使ってファイルの管理をするのを助けてくれます。新しいバージョンのGaiahでは、Markdownでコミットメッセージをかけるようになりました。
 
-## 🚀 主な特徴
+## 🚀 Gaiahの特徴
 
-- 🤖 **AIフレンドリー**: AI主導の開発プロセスの独自の要件に対応するメソッドとユーティリティを提供し、AIを念頭に置いて設計されています。
-- 🌐 **リモートリポジトリのサポート**: リモートリポジトリとのシームレスな連携を可能にし、GitHubやその他のGitホスティングプラットフォームにリポジトリを作成、クローン、プッシュできるようにします。 
-- 📂 **リポジトリ管理**: 新しいリポジトリの初期化、ファイルの追加、コミットの作成、ブランチの管理をシンプルなPythonコードを介して簡単に行うことができます。
-- 🔧 **カスタマイズ**: 柔軟性とカスタマイズオプションを提供し、特定のニーズと設定に合わせてGitワークフローを調整できます。
-- 📘 **Markdownからのコミット生成**: Markdown形式のドキュメントから直接コミットを生成する機能を追加し、文書化されたコミットメッセージの効率的な管理を可能にします。
+- 🤖 **AIにやさしい**: AIを使った開発に合わせて作られています。
+- 🌐 **リモートリポジトリ**: GitHubなどのサービスとつながります。
+- 📂 **リポジトリ管理**: 新しいリポジトリを作ったり、ファイルを追加したり、コミットしたり、ブランチを管理したりできます。
+- 🔧 **カスタマイズ**: 自分の好みに合わせてGitの使い方を変えられます。
+- 📘 **Markdownでコミット**: Markdownで書いたファイルからコミットメッセージを作れます。
 
-## 📦 インストール
+## 📦 インストールの仕方
 
-Gaiahの使用を開始するには、次の手順に従ってください:
+Gaiahを使うには、次のコマンドを実行してください:
 
-1. 新しいconda環境を作成します:
    ```
-   conda create -n gaiah python=3.11
-   ```
-2. conda環境をアクティベートします:
-   ```
-   conda activate gaiah
-   ```
-3. 必要な依存関係をインストールします:
-   ```
-   pip install gitpython python-dotenv PyGithub termcolor art
+   pip install gaiah-toolkit
    ```
 
-## 🎉 使用方法
+## 🎉 使い方
 
-### CLI
+### コマンドライン
 
-GaiahのCLI機能により、コマンドラインから直接Git操作を行うことができます。例えば、以下のコマンドを使用してリポジトリにコミットを追加することができます:
+Gaiahはコマンドラインから使えます。例えば、こんなふうにコミットできます:
 ```bash
 gaiah
 ```
 
-### 応用的な使い方
-
-特定のプロジェクトディレクトリでGaiahを使用する場合、以下のようにリポジトリの場所やコミットメッセージのファイルパスを指定できます:
-
+もっと細かく指定することもできます:
 ```bash
 gaiah --repo_dir="C:\\Prj\\Gaiah_Sample02" --commit_msg_path=./tmp2.md
 ```
 
-### リポジトリの初期化
+### 新しいリポジトリを作る
 
 ```bash
 gaiah --create_repo --repo_name Gaiah_Sample05 --description "Gaiah_Sample05 repo" --init_repo --repo_dir C:\Prj\Gaiah_Sample\Gaiah_Sample05 --process_commits --commit_msg_path .Gaiah.md
 ```
 
-## 処理フロー
+### .Gaiah.mdのコミットメッセージを一括送信
+
+Gaiahでは、.Gaiah.mdファイルにMarkdown形式でコミットメッセージをまとめて書いておくことができます。そして、次のコマンドを実行すると、.Gaiah.mdに書かれたコミットメッセージが一括でリポジトリに送信されます:
+
+```bash
+gaiah --process_commits
+```
+
+このコマンドを使えば、たくさんのコミットメッセージを一度に処理できるので、とても便利です。
+
+## Gaiahの中身
+
+Gaiahの処理の流れは、次の図のようになっています:
 
 ```mermaid
 
 graph TD
-   A[ユーザーがCLIを実行] --> B{コマンドライン引数を解析}
-   B --> C{Gaiahオブジェクトを作成}
-   C --> D{--create_repoオプションが指定されている?}
-   D -->|Yes| E[新しいリポジトリをGitHub上に作成]
-   E --> E1[.envファイルから環境変数を読み込む]
-   E1 --> E2[環境変数からアクセストークンを取得]
-   E2 --> E3[GitHubオブジェクトを作成]
-   E3 --> E4[リポジトリ名とパラメータを指定]
-   E4 --> E5[GitHub上に新しいリポジトリを作成]
-   E5 --> E6[リポジトリ作成完了のメッセージを表示]
-   E6 --> Q[処理完了]
-   D -->|No| F{--process_commitsオプションが指定されている?}
-   F -->|Yes| G[コミットメッセージファイルからコミットを処理]
-   G --> H[すべてのファイルをアンステージ]
-   H --> I{コミットセクションごとに処理}
+   A[ユーザーがコマンドを実行] --> B{コマンドを読み取る}
+   B --> C{Gaiahを準備}
+   C --> D{新しいリポジトリを作る?}
+   D -->|Yes| E[GitHubに新しいリポジトリを作る]
+   E --> E1[.envファイルから情報を読む]
+   E1 --> E2[トークンを取得]
+   E2 --> E3[GitHubとつなぐ]
+   E3 --> E4[リポジトリ名などを設定]
+   E4 --> E5[リポジトリを作る]
+   E5 --> E6[完了メッセージを出す]
+   E6 --> Q[おしまい]
+   D -->|No| F{コミットする?}
+   F -->|Yes| G[Markdownファイルからコミットを作る]
+   G --> H[全部のファイルをアンステージ]
+   H --> I{コミットを1つずつ処理}
    I --> J{ファイル名とコミットメッセージを取得}
    J --> K{ファイルを処理}
    K --> L{ファイルをステージ}
    L --> M{変更をコミット}
-   M --> N{次のコミットセクションがある?}
+   M --> N{次のコミットある?}
    N -->|Yes| I
-   N -->|No| O[リモートリポジトリにプッシュ]
-   O --> P[処理完了]
-   F -->|No| Q[処理完了]
+   N -->|No| O[リモートにプッシュ]
+   O --> P[おしまい]
+   F -->|No| Q[おしまい]
 
 ```
 
-## 開発用
+## 開発者向け
+
+1. 新しいconda環境を作ります:
+   ```
+   conda create -n gaiah python=3.11
+   ```
+2. conda環境に入ります:
+   ```
+   conda activate gaiah
+   ```
+3. 必要なものをインストールします:
+   ```
+   pip install gitpython python-dotenv PyGithub termcolor art
+   ```
+
+便利なコマンド:
+```bash
+script\activate-gaiah.bat
+```
 
 ```bash
 gaiah --repo_dir C:\Prj\Gaiah_Sample\Gaiah_Sample05 --process_commits
+gaiah --create_repo --repo_name AIRA --description "AIRA: AI-Integrated Repository for Accelerated Development" --init_repo --repo_dir C:\Prj\AIRA --process_commits --commit_msg_path .Gaiah.md
 ```
 
+## 🤝 みんなでGaiahを良くしよう
 
-
-
-## 🤝 貢献
-
-Gaiahをさらに良くするために、コミュニティからの貢献を歓迎します。アイデア、提案、バグ報告がある場合は、[GitHubリポジトリ](https://github.com/Sunwood-ai-labs/Gaiah)で issue を開くか、プルリクエストを送信してください。
+Gaiahをもっと良くするアイデアや、バグを見つけたら、[GitHubのページ](https://github.com/Sunwood-ai-labs/Gaiah)で教えてください。
 
 ## 📄 ライセンス
 
-Gaiahは、[MITライセンス](https://opensource.org/licenses/MIT)の下でリリースされており、ライブラリの自由かつオープンソースでの使用、変更、配布が可能です。
+GaiahはMITライセンスで公開されているので、自由に使ったり、変えたり、配ったりできます。
 
-## 🙏 謝辞
+## 🙏 感謝
 
-Gaiahは、以下のライブラリの優れた機能に基づいて構築されています:
+Gaiahは、次のようなすばらしいライブラリのおかげで作ることができました:
 
 - [GitPython](https://github.com/gitpython-developers/GitPython)
 - [python-dotenv](https://github.com/theskumar/python-dotenv)
@@ -146,8 +162,8 @@ Gaiahは、以下のライブラリの優れた機能に基づいて構築され
 - [termcolor](https://pypi.org/project/termcolor/)
 - [art](https://pypi.org/project/art/)
 
-これらのプロジェクトの開発者とコントリビューターの皆様が、オープンソースコミュニティに貴重な貢献をしてくださったことに感謝します。
+これらを作ってくれた人たちに感謝します。
 
 ---
 
-Gaiahを使用してGitワークフローの自動化を開始し、AI主導の開発の力を解き放ちましょう! 🚀✨
+さあ、Gaiahを使ってGitを楽しく使いこなしましょう! 🚀✨

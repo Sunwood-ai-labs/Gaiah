@@ -29,51 +29,17 @@ def parse_arguments():
     parser.add_argument('--repo_dir', default='./', help='初期化するディレクトリのパス')
     parser.add_argument('--no_initial_commit', action='store_true', help='初期コミットを作成しない')
     
+    parser.add_argument('--branch_name', default=None, help='コミットに使用するブランチ名')
     parser.add_argument('--process_commits', action='store_true', help='マークダウンファイルから複数のコミットを行う')
     parser.add_argument('--commit_msg_path', default='.Gaiah.md', help='コミットメッセージファイルのパス')
 
     return parser.parse_args()
 
-
 def main():
     args = parse_arguments()
-
-    tprint("!  Gaiahへようこそ  !")
-
-    repo_dir = args.repo_dir if args.init_repo or args.process_commits else None
-    commit_msg_path = args.commit_msg_path if args.process_commits else None
-    gaiah = Gaiah(repo_dir, commit_msg_path)
-
-    if args.init_repo:
-        gaiah.init_local_repo(args.repo_dir, not args.no_initial_commit)
-
-    if args.create_repo:
-        repo_params = {
-            'description': args.description,
-            'private': args.private
-        }
-        logger.info(">>> リモートリポジトリを作成しています...")
-        gaiah.create_remote_repo(args.repo_name, repo_params)
-        
-        logger.info(">>> ブランチを作成しています...")
-        gaiah.create_branches()
-        
-        logger.info(">>> 初期ファイルを追加しています...")
-        gaiah.add_initial_files()
-        
-        logger.info(">>> 初期ファイルをコミットしています...")
-        gaiah.commit_initial_files()
-        
-        logger.info(">>> ブランチをマージしています...")
-        gaiah.merge_branches()
-        
-        logger.info(">>> マージしたブランチをプッシュしています...")
-        gaiah.push_merged_branches()
-
-    if args.process_commits:
-        gaiah.process_commits()
-
-    logger.success("全ての操作が正常に完了しました!")
+    tprint("!  Welcome to Gaiah  !")
+    gaiah = Gaiah(args)
+    gaiah.run()
 
 if __name__ == "__main__":
     main()

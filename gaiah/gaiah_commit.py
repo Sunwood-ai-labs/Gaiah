@@ -1,6 +1,6 @@
 import re
 from loguru import logger
-from .utils import run_command
+from .utils import run_command, tqdm_sleep
 import os
 
 class GaiahCommit:
@@ -69,7 +69,8 @@ class GaiahCommit:
             self.logger.error(f"Error while committing changes: {e}")
             raise
 
-    def process_commits(self):
+
+    def process_commits(self, branch_name=None):
         """
         コミットメッセージファイルからコミットを処理する
         """
@@ -85,8 +86,13 @@ class GaiahCommit:
 
         branch_sections = re.split(r'(?m)^##\s(.+)', content)[1:]
 
+        self.unstage_files()
+        tqdm_sleep(5)
+        # ステージされているファイルをアンステージ
+        # run_command(["git", "reset"], cwd=self.repo.repo_dir)
+
         for i in range(0, len(branch_sections), 2):
-            branch_name = branch_sections[i].strip()
+            file_branch_name = branch_sections[i].strip()
             branch_content = branch_sections[i + 1]
 
             commits = re.split(self.FILENAME_REGEX, branch_content)
@@ -96,15 +102,14 @@ class GaiahCommit:
             for j in range(0, len(commits), 2):
                 filename = commits[j].strip()
                 commit_message_section = commits[j + 1]
-                self.process_commit_section(filename, commit_message_section, branch_name)
+                self.process_commit_section(filename, commit_message_section, branch_name or file_branch_name)
 
-            # self.repo.push_to_remote(branch_name=branch_name)
-            
             # developブランチにマージ
-            self.repo.merge_to_develop(branch_name)
-            
+            self.repo.merge_to_develop(branch_name or file_branch_name)
+
             # マージ後のブランチを削除
-            self.repo.delete_branch(branch_name)
+            self.repo.delete_branch(branch_name or file_branch_name)
+
 
     def process_commit_section(self, filename, commit_message_section, branch_name):
         """
@@ -134,17 +139,20 @@ class GaiahCommit:
         try:
             if os.path.exists(os.path.join(self.repo.repo_dir, filename)):
                 self.stage_file(filename, "modified")
+                self.logger.info("file is modified")
             else:
                 self.stage_file(filename, "deleted")
+                self.logger.info("file is deleted")
 
             changed_files = run_command(["git", "diff", "--staged", "--name-only"], cwd=self.repo.repo_dir).splitlines()
-
+            
+            self.logger.info(f"changed_files is {changed_files}")
             if filename in changed_files:
                 self.commit_changes(commit_message, branch_name)
                 # self.repo.push_to_remote(branch_name=branch_name)
             else:
                 self.logger.info(f"No changes detected in file: {filename}")
-                self.unstage_files()
+                # self.unstage_files()
 
         except Exception as e:
             self.logger.error(f"Error while processing file: {filename} - {e}")
