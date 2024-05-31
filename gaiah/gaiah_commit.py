@@ -142,8 +142,10 @@ class GaiahCommit:
         try:
             if os.path.exists(os.path.join(self.repo.repo_dir, filename)):
                 self.stage_file(filename, "modified")
+                self.logger.info("file is modified")
             else:
                 self.stage_file(filename, "deleted")
+                self.logger.info("file is deleted")
 
             changed_files = run_command(["git", "diff", "--staged", "--name-only"], cwd=self.repo.repo_dir).splitlines()
 
@@ -152,7 +154,7 @@ class GaiahCommit:
                 # self.repo.push_to_remote(branch_name=branch_name)
             else:
                 self.logger.info(f"No changes detected in file: {filename}")
-                self.unstage_files()
+                # self.unstage_files()
 
         except Exception as e:
             self.logger.error(f"Error while processing file: {filename} - {e}")
