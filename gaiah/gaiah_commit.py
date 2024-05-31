@@ -70,7 +70,7 @@ class GaiahCommit:
             raise
 
 
-    def process_commits(self):
+    def process_commits(self, branch_name=None):
         """
         コミットメッセージファイルからコミットを処理する
         """
@@ -92,7 +92,7 @@ class GaiahCommit:
         # run_command(["git", "reset"], cwd=self.repo.repo_dir)
 
         for i in range(0, len(branch_sections), 2):
-            branch_name = branch_sections[i].strip()
+            file_branch_name = branch_sections[i].strip()
             branch_content = branch_sections[i + 1]
 
             commits = re.split(self.FILENAME_REGEX, branch_content)
@@ -102,16 +102,13 @@ class GaiahCommit:
             for j in range(0, len(commits), 2):
                 filename = commits[j].strip()
                 commit_message_section = commits[j + 1]
-                self.process_commit_section(filename, commit_message_section, branch_name)
-
-                # ファイルを削除
-                # run_command(["git", "rm", filename], cwd=self.repo.repo_dir)
+                self.process_commit_section(filename, commit_message_section, branch_name or file_branch_name)
 
             # developブランチにマージ
-            self.repo.merge_to_develop(branch_name)
+            self.repo.merge_to_develop(branch_name or file_branch_name)
 
             # マージ後のブランチを削除
-            self.repo.delete_branch(branch_name)
+            self.repo.delete_branch(branch_name or file_branch_name)
 
 
     def process_commit_section(self, filename, commit_message_section, branch_name):

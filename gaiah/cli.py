@@ -29,6 +29,7 @@ def parse_arguments():
     parser.add_argument('--repo_dir', default='./', help='初期化するディレクトリのパス')
     parser.add_argument('--no_initial_commit', action='store_true', help='初期コミットを作成しない')
     
+    parser.add_argument('--branch_name', default=None, help='コミットに使用するブランチ名')
     parser.add_argument('--process_commits', action='store_true', help='マークダウンファイルから複数のコミットを行う')
     parser.add_argument('--commit_msg_path', default='.Gaiah.md', help='コミットメッセージファイルのパス')
 
