@@ -148,7 +148,8 @@ class GaiahCommit:
                 self.logger.info("file is deleted")
 
             changed_files = run_command(["git", "diff", "--staged", "--name-only"], cwd=self.repo.repo_dir).splitlines()
-
+            
+            self.logger.info(f"changed_files is {changed_files}")
             if filename in changed_files:
                 self.commit_changes(commit_message, branch_name)
                 # self.repo.push_to_remote(branch_name=branch_name)
