@@ -1,6 +1,6 @@
 import re
 from loguru import logger
-from .utils import run_command
+from .utils import run_command, tqdm_sleep
 import os
 
 class GaiahCommit:
@@ -69,6 +69,7 @@ class GaiahCommit:
             self.logger.error(f"Error while committing changes: {e}")
             raise
 
+
     def process_commits(self):
         """
         コミットメッセージファイルからコミットを処理する
@@ -83,8 +84,12 @@ class GaiahCommit:
                 file.write("")
             return
 
-        self.unstage_files()
         branch_sections = re.split(r'(?m)^##\s(.+)', content)[1:]
+
+        self.unstage_files()
+        tqdm_sleep(5)
+        # ステージされているファイルをアンステージ
+        # run_command(["git", "reset"], cwd=self.repo.repo_dir)
 
         for i in range(0, len(branch_sections), 2):
             branch_name = branch_sections[i].strip()
@@ -99,13 +104,15 @@ class GaiahCommit:
                 commit_message_section = commits[j + 1]
                 self.process_commit_section(filename, commit_message_section, branch_name)
 
-            # self.repo.push_to_remote(branch_name=branch_name)
-            
+                # ファイルを削除
+                run_command(["git", "rm", filename], cwd=self.repo.repo_dir)
+
             # developブランチにマージ
             self.repo.merge_to_develop(branch_name)
-            
+
             # マージ後のブランチを削除
             self.repo.delete_branch(branch_name)
+
 
     def process_commit_section(self, filename, commit_message_section, branch_name):
         """
