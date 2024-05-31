@@ -24,7 +24,8 @@ setup(
     ],
     package_data={
         'gaiah': ['README.md',
-                  'requirements.txt'],
+                  'requirements.txt',
+                  'template/*'], 
     },
     long_description=long_description,
     long_description_content_type="text/markdown",
