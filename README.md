@@ -122,6 +122,7 @@ graph TD
 
 ```bash
 gaiah --repo_dir C:\Prj\Gaiah_Sample\Gaiah_Sample05 --process_commits
+gaiah --create_repo --repo_name AIRA --description "AIRA: AI-Integrated Repository for Accelerated Development" --init_repo --repo_dir C:\Prj\AIRA --process_commits --commit_msg_path .Gaiah.md
 ```
 
 
