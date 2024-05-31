@@ -13,21 +13,22 @@ class Gaiah:
         self.repo.init_local_repo(repo_dir, initial_commit)
 
     def create_remote_repo(self, repo_name, repo_params):
+        logger.info(">>> リモートリポジトリを作成しています...")
         self.repo.create_remote_repo(repo_name, repo_params)
-
-    def add_initial_files(self):
-        self.repo.add_initial_files()
-
-    def create_branches(self):
+        
+        logger.info(">>> ブランチを作成しています...")
         self.repo.create_branches()
-
-    def commit_initial_files(self):
+        
+        logger.info(">>> 初期ファイルを追加しています...")
+        self.repo.add_initial_files()
+        
+        logger.info(">>> 初期ファイルをコミットしています...")
         self.repo.commit_initial_files()
-
-    def merge_branches(self):
+        
+        logger.info(">>> ブランチをマージしています...")
         self.repo.merge_branches()
-
-    def push_merged_branches(self):
+        
+        logger.info(">>> マージしたブランチをプッシュしています...")
         self.repo.push_merged_branches()
 
     def process_commits(self):
