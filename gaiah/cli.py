@@ -34,27 +34,11 @@ def parse_arguments():
 
     return parser.parse_args()
 
-
 def main():
     args = parse_arguments()
-
     tprint("!  Welcome to Gaiah  !")
+    gaiah = Gaiah(args)
+    gaiah.run()
 
-    repo_dir = args.repo_dir if args.init_repo or args.process_commits else None
-    commit_msg_path = args.commit_msg_path if args.process_commits else None
-    gaiah = Gaiah(repo_dir, commit_msg_path)
-
-    if args.init_repo:
-        gaiah.init_local_repo(args.repo_dir, not args.no_initial_commit)
-
-    if args.create_repo:
-        repo_params = {
-            'description': args.description,
-            'private': args.private
-        }
-        gaiah.create_remote_repo(args.repo_name, repo_params)
-
-    if args.process_commits:
-        gaiah.process_commits()
-
-    logger.success("successfully!")
+if __name__ == "__main__":
+    main()
