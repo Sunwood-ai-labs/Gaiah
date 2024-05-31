@@ -50,7 +50,7 @@ class GaiahRepo:
         """
         try:
             # .gitignoreファイルをコピー
-            gitignore_src = os.path.join(os.path.dirname(__file__), 'template', '.gitignore')
+            gitignore_src = os.path.join(os.path.dirname(__file__), 'template', 'template.gitignore')
             gitignore_dst = os.path.join(self.repo_dir, '.gitignore')
             shutil.copyfile(gitignore_src, gitignore_dst)
             logger.info(f"Copied .gitignore file to: {gitignore_dst}")
