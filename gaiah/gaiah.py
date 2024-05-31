@@ -22,7 +22,7 @@ class Gaiah:
             self.create_remote_repo(self.args.repo_name, repo_params)
 
         if self.args.process_commits:
-            self.process_commits()
+            self.commit.process_commits(branch_name=self.args.branch_name)
 
         logger.success("successfully!")
 
@@ -47,6 +47,3 @@ class Gaiah:
         
         logger.info(">>> マージしたブランチをプッシュしています...")
         self.repo.push_merged_branches()
-
-    def process_commits(self):
-        self.commit.process_commits()
