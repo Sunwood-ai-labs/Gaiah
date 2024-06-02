@@ -11,6 +11,7 @@ def run_command(command, cwd=None, check=True):
     try:
         logger.info(f"実行コマンド： {' '.join(command)}")
         result = subprocess.run(command, cwd=cwd, check=check, capture_output=True, text=True, encoding='utf-8')
+        time.sleep(1)  
         return result.stdout.strip()
     except subprocess.CalledProcessError as e:
         error_message = e.stderr.strip()
