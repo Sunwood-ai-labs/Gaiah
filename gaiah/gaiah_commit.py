@@ -35,11 +35,12 @@ class GaiahCommit:
         """
         try:
             if action == "deleted":
-                run_command(["git", "rm", filename], cwd=self.repo.repo_dir)
                 self.logger.info(f"Deleted file: {filename}")
+                run_command(["git", "rm", filename], cwd=self.repo.repo_dir)
+                
             else:
-                run_command(["git", "add", filename], cwd=self.repo.repo_dir)
                 self.logger.info(f"Staged file: {filename}")
+                run_command(["git", "add", filename], cwd=self.repo.repo_dir)
         except Exception as e:
             self.logger.error(f"Error while staging file: {filename} - {e}")
             raise
@@ -75,12 +76,12 @@ class GaiahCommit:
         コミットメッセージファイルからコミットを処理する
         """
         try:
-            with open(self.repo.commit_messages_path, "r", encoding="utf-8") as file:
+            with open(self.repo.config['gaiah']['commit']['commit_msg_path'], "r", encoding="utf-8") as file:
                 content = file.read()
         except FileNotFoundError:
-            self.logger.warning(f"Commit messages file not found: {self.repo.commit_messages_path}")
-            self.logger.info(f"Creating an empty commit messages file: {self.repo.commit_messages_path}")
-            with open(self.repo.commit_messages_path, "w", encoding="utf-8") as file:
+            self.logger.warning(f"Commit messages file not found: {self.repo.config['gaiah']['commit']['commit_msg_path']}")
+            self.logger.info(f"Creating an empty commit messages file: {self.repo.config['gaiah']['commit']['commit_msg_path']}")
+            with open(self.repo.config['gaiah']['commit']['commit_msg_path'], "w", encoding="utf-8") as file:
                 file.write("")
             return
 
@@ -88,8 +89,6 @@ class GaiahCommit:
 
         self.unstage_files()
         tqdm_sleep(5)
-        # ステージされているファイルをアンステージ
-        # run_command(["git", "reset"], cwd=self.repo.repo_dir)
 
         for i in range(0, len(branch_sections), 2):
             file_branch_name = branch_sections[i].strip()
@@ -118,8 +117,6 @@ class GaiahCommit:
         commit_message_match = re.search(self.COMMIT_MESSAGE_REGEX, commit_message_section, re.DOTALL)
         if commit_message_match:
             commit_message = commit_message_match.group(1)
-            # 絵文字を削除する
-            # commit_message = re.sub(r'[^\x00-\x7F]+', '', commit_message)
             msg = f"{'-'*10} Commit message: [{branch_name}][{filename}]{'-'*10} "
             self.logger.info(f"{msg}")
             for commit_msg in commit_message.split("\n"):
@@ -138,21 +135,20 @@ class GaiahCommit:
         """
         try:
             if os.path.exists(os.path.join(self.repo.repo_dir, filename)):
-                self.stage_file(filename, "modified")
                 self.logger.info("file is modified")
+                self.stage_file(filename, "modified")
+                
             else:
-                self.stage_file(filename, "deleted")
                 self.logger.info("file is deleted")
+                self.stage_file(filename, "deleted")
 
             changed_files = run_command(["git", "diff", "--staged", "--name-only"], cwd=self.repo.repo_dir).splitlines()
             
             self.logger.info(f"changed_files is {changed_files}")
             if filename in changed_files:
                 self.commit_changes(commit_message, branch_name)
-                # self.repo.push_to_remote(branch_name=branch_name)
             else:
                 self.logger.info(f"No changes detected in file: {filename}")
-                # self.unstage_files()
 
         except Exception as e:
             self.logger.error(f"Error while processing file: {filename} - {e}")

@@ -6,8 +6,10 @@ from .utils import run_command, tqdm_sleep
 import shutil
 
 class GaiahRepo:
-    def __init__(self, repo_dir, commit_messages_path):
+    def __init__(self, repo_dir, config):
         self.repo_dir = repo_dir
+        self.config = config
+        commit_messages_path = config["gaiah"]["commit"]["commit_msg_path"]
         self.commit_messages_path = os.path.join(repo_dir, commit_messages_path) if commit_messages_path else None
         self.default_branch = "develop"
 
@@ -148,9 +150,9 @@ class GaiahRepo:
                 logger.info("mainブランチをチェックアウトしました。")
             except Exception as e:
                 logger.warning(f"mainブランチのチェックアウトに失敗しました: {e}")
-                logger.info("mainブランチを作成します。")
-                run_command(["git", "checkout", "-b", "main"], cwd=self.repo_dir)
-                logger.success("mainブランチを作成しました。")
+                logger.info("mainブランチに切り替えます。")
+                run_command(["git", "checkout", "main"], cwd=self.repo_dir)
+                logger.success("mainブランチに切り替えました。")
 
             # developブランチをmainブランチにマージ
             try:
@@ -158,9 +160,9 @@ class GaiahRepo:
                 logger.success("developブランチをmainブランチにマージしました。")
             except Exception as e:
                 logger.warning(f"developブランチのマージに失敗しました: {e}")
-                logger.info("developブランチを作成します。")
-                run_command(["git", "checkout", "-b", "develop"], cwd=self.repo_dir)
-                logger.success("developブランチを作成しました。")
+                # logger.info("developブランチを作成します。")
+                # run_command(["git", "checkout", "-b", "develop"], cwd=self.repo_dir)
+                # logger.success("developブランチを作成しました。")
 
         except Exception as e:
             logger.error(f"ブランチのマージ中にエラーが発生しました: {e}")
