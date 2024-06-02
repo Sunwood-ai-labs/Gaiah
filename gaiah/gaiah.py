@@ -3,28 +3,31 @@ from .gaiah_repo import GaiahRepo
 from .gaiah_commit import GaiahCommit
 
 class Gaiah:
-    def __init__(self, args):
-        self.args = args
-        self.repo_dir = args.repo_dir if args.init_repo or args.process_commits else None
-        self.commit_msg_path = args.commit_msg_path if args.process_commits else None
-        self.repo = GaiahRepo(self.repo_dir, self.commit_msg_path)
+    def __init__(self, config):
+        self.config = config
+        self.repo_dir = self.config['gaiah']['local']['repo_dir']
+        print(self.repo_dir)
+        self.repo = GaiahRepo(self.repo_dir, self.config)
         self.commit = GaiahCommit(self.repo)
 
     def run(self):
-        if self.args.init_repo:
-            self.init_local_repo(self.args.repo_dir, not self.args.no_initial_commit)
+        if self.config['gaiah']['local']['init_repo']:
+            self.init_local_repo(self.repo_dir, not self.config['gaiah']['local']['no_initial_commit'])
 
-        if self.args.create_repo:
+        if self.config['gaiah']['repo']['create_repo']:
             repo_params = {
-                'description': self.args.description,
-                'private': self.args.private
+                'description': self.config['gaiah']['repo']['description'],
+                'private': self.config['gaiah']['repo']['private']
             }
-            self.create_remote_repo(self.args.repo_name, repo_params)
+            self.create_remote_repo(self.config['gaiah']['repo']['repo_name'], repo_params)
 
-        if self.args.process_commits:
-            self.commit.process_commits(branch_name=self.args.branch_name)
+        if self.config['gaiah']['commit']['process_commits']:
+            self.process_commits()    
 
         logger.success("successfully!")
+        
+    def process_commits(self):
+        self.commit.process_commits(branch_name=self.config['gaiah']['commit']['branch_name'])
 
     def init_local_repo(self, repo_dir, initial_commit=True):
         self.repo.init_local_repo(repo_dir, initial_commit)
@@ -47,3 +50,10 @@ class Gaiah:
         
         logger.info(">>> マージしたブランチをプッシュしています...")
         self.repo.push_merged_branches()
+        
+    def checkout_and_merge_branches(self):
+        self.repo.merge_branches()
+        
+    def push(self):
+        self.repo.push_merged_branches()
+        
