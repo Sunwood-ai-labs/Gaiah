@@ -36,6 +36,7 @@ setup(
             'PyGithub',
             'termcolor',
             'art',
+            'pyyaml',
         ],
     entry_points={
         'console_scripts': [
