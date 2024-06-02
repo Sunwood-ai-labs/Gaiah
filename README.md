@@ -1,6 +1,6 @@
 
 <p align="center">
-<img src="https://huggingface.co/datasets/MakiAi/IconAssets/resolve/main/Gaiah_icon1.png" width="100%">
+<img src="https://huggingface.co/datasets/MakiAi/IconAssets/resolve/main/Gaiah.png" width="100%">
 <br>
 <h1 align="center">Gaiah</h1>
 <h2 align="center">
@@ -37,89 +37,120 @@
 
 ## 🌟 はじめに
 
-Gaiahは、初心者でも簡単に使えるPythonのライブラリです。Gitを使ってファイルの管理をするのを助けてくれます。新しいバージョンのGaiahでは、Markdownでコミットメッセージをかけるようになりました。
+Gaiah は、Python で書かれた、Git リポジトリ管理を支援するツールです。v0.6.0 では、Markdown 形式のコミットメッセージファイル `.Gaiah.md` を使って、複数のコミットを一度に処理できるようになりました。
 
 ## 🚀 Gaiahの特徴
 
-- 🤖 **AIにやさしい**: AIを使った開発に合わせて作られています。
-- 🌐 **リモートリポジトリ**: GitHubなどのサービスとつながります。
-- 📂 **リポジトリ管理**: 新しいリポジトリを作ったり、ファイルを追加したり、コミットしたり、ブランチを管理したりできます。
-- 🔧 **カスタマイズ**: 自分の好みに合わせてGitの使い方を変えられます。
-- 📘 **Markdownでコミット**: Markdownで書いたファイルからコミットメッセージを作れます。
+- **Markdown でコミットメッセージ作成**: `.Gaiah.md` ファイルに Markdown 形式でコミットメッセージを記述し、`gaiah --process_commits` コマンドで複数のコミットを一度に実行できます。
+- **設定ファイルの導入**: `.gaiah/config.yml` ファイルで、リポジトリ名、説明、公開/非公開などの設定をカスタマイズできます。
+- **テンプレート設定ファイル**: 初めて Gaiah を使う際に、`.gaiah/config.yml` ファイルのテンプレートが自動生成されます。
+- **モード選択**: `--mode` オプションで、`commit`（コミット処理）または `make`（リポジトリ作成）のモードを選択できます。
+- **AI 開発に最適化**: Gaiahは、AIを活用した開発ワークフローにシームレスに統合できるように設計されています。
+- **直感的なコマンドラインインターフェース**: シンプルで覚えやすいコマンドで、Git操作を効率的に実行できます。
+- **拡張性の高いアーキテクチャ**: Gaiahは、将来の機能拡張やカスタマイズに対応できる柔軟な設計を採用しています。
 
-## 📦 インストールの仕方
+## 📦 インストール方法
 
-Gaiahを使うには、次のコマンドを実行してください:
-
-   ```
-   pip install gaiah-toolkit
-   ```
+```bash
+pip install gaiah-toolkit
+```
 
 ## 🎉 使い方
 
-### コマンドライン
+### リポジトリの作成と初期コミット
 
-Gaiahはコマンドラインから使えます。例えば、こんなふうにコミットできます:
-```bash
-gaiah
-```
-
-もっと細かく指定することもできます:
-```bash
-gaiah --repo_dir="C:\\Prj\\Gaiah_Sample02" --commit_msg_path=./tmp2.md
-```
-
-### 新しいリポジトリを作る
+1.  プロジェクトのルートディレクトリに移動します。
+2.  以下のコマンドを実行して、リポジトリを作成し、初期コミットを行います。
 
 ```bash
-gaiah --create_repo --repo_name Gaiah_Sample05 --description "Gaiah_Sample05 repo" --init_repo --repo_dir C:\Prj\Gaiah_Sample\Gaiah_Sample05 --process_commits --commit_msg_path .Gaiah.md
+gaiah --mode make
 ```
 
-### .Gaiah.mdのコミットメッセージを一括送信
+### コミットの実行
 
-Gaiahでは、.Gaiah.mdファイルにMarkdown形式でコミットメッセージをまとめて書いておくことができます。そして、次のコマンドを実行すると、.Gaiah.mdに書かれたコミットメッセージが一括でリポジトリに送信されます:
+1.  `.Gaiah.md` ファイルに、Markdown 形式でコミットメッセージを記述します。
+2.  以下のコマンドを実行して、コミットを実行します。
 
 ```bash
-gaiah --process_commits
+gaiah --mode commit
 ```
 
-このコマンドを使えば、たくさんのコミットメッセージを一度に処理できるので、とても便利です。
+### 設定のカスタマイズ
 
-## Gaiahの中身
+`.gaiah/config.yml` ファイルを編集して、リポジトリ名、説明、公開/非公開などの設定をカスタマイズできます。
 
-Gaiahの処理の流れは、次の図のようになっています:
+## ⚙️ 設定ファイル `.gaiah/config.yml` の解説
+
+```yaml
+gaiah:  # 共通設定
+  run: true
+  repo:
+    repo_name: "AIRA-Sample01"
+    description: ""
+    private: false
+  local:
+    repo_dir: "./"
+    no_initial_commit: false
+  commit:
+    commit_msg_path: ".Gaiah.md"
+    branch_name: null
+
+  dev:  # 開発時の設定 (必要に応じて上書き)
+    repo:
+      create_repo: false
+    local:
+      init_repo: false
+    commit:
+      process_commits: true
+
+  init:  # 初期化時の設定 (必要に応じて上書き)
+    repo:
+      create_repo: true
+    local:
+      init_repo: true
+    commit:
+      process_commits: false
+```
+
+- `gaiah`: 共通設定を定義します。
+- `dev`: 開発時の設定を定義します。共通設定を上書きします。
+- `init`: 初期化時の設定を定義します。共通設定を上書きします。
+- 各セクションには、以下の設定項目があります。
+    - `repo`: リポジトリに関する設定です。
+        - `create_repo`: リモートリポジトリを作成するかどうかを指定します。
+        - `repo_name`: リポジトリ名を指定します。
+        - `description`: リポジトリの説明を指定します。
+        - `private`: リポジトリを非公開にするかどうかを指定します。
+    - `local`: ローカルリポジトリに関する設定です。
+        - `init_repo`: ローカルリポジトリを初期化するかどうかを指定します。
+        - `repo_dir`: ローカルリポジトリのディレクトリを指定します。
+        - `no_initial_commit`: 初期コミットを作成しないかどうかを指定します。
+    - `commit`: コミットに関する設定です。
+        - `process_commits`: `.Gaiah.md` ファイルから複数のコミットを実行するかどうかを指定します。
+        - `commit_msg_path`: `.Gaiah.md` ファイルのパスを指定します。
+        - `branch_name`: コミットに使用するブランチ名を指定します。
+
+## 🤖 Gaiahの処理フロー
 
 ```mermaid
-
 graph TD
-   A[ユーザーがコマンドを実行] --> B{コマンドを読み取る}
-   B --> C{Gaiahを準備}
-   C --> D{新しいリポジトリを作る?}
-   D -->|Yes| E[GitHubに新しいリポジトリを作る]
-   E --> E1[.envファイルから情報を読む]
-   E1 --> E2[トークンを取得]
-   E2 --> E3[GitHubとつなぐ]
-   E3 --> E4[リポジトリ名などを設定]
-   E4 --> E5[リポジトリを作る]
-   E5 --> E6[完了メッセージを出す]
-   E6 --> Q[おしまい]
-   D -->|No| F{コミットする?}
-   F -->|Yes| G[Markdownファイルからコミットを作る]
-   G --> H[全部のファイルをアンステージ]
-   H --> I{コミットを1つずつ処理}
-   I --> J{ファイル名とコミットメッセージを取得}
-   J --> K{ファイルを処理}
-   K --> L{ファイルをステージ}
-   L --> M{変更をコミット}
-   M --> N{次のコミットある?}
-   N -->|Yes| I
-   N -->|No| O[リモートにプッシュ]
-   O --> P[おしまい]
-   F -->|No| Q[おしまい]
-
+    A[ユーザーがコマンドを実行] --> B{コマンドを解析}
+    B --> C{設定ファイルを読み込み}
+    C --> D{Gaiahを初期化}
+    D --> E{モードに応じて処理を実行}
+    E --> F[リポジトリ作成]
+    E --> G[コミット処理]
+    F --> H[リモートリポジトリ作成]
+    F --> I[ローカルリポジトリ初期化]
+    G --> J[コミットメッセージファイル読み込み]
+    J --> K[コミットメッセージごとに処理]
+    K --> L[ファイルをステージング]
+    L --> M[変更をコミット]
+    M --> N{プッシュ}
 ```
+    
+## 🤝 開発に参加しよう
 
-## 開発者向け
 
 1. 新しいconda環境を作ります:
    ```
