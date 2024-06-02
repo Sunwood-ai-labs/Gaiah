@@ -1,6 +1,6 @@
 
 <p align="center">
-<img src="https://huggingface.co/datasets/MakiAi/IconAssets/resolve/main/Gaiah_icon1.png" width="100%">
+<img src="https://huggingface.co/datasets/MakiAi/IconAssets/resolve/main/Gaiah.png" width="100%">
 <br>
 <h1 align="center">Gaiah</h1>
 <h2 align="center">
