@@ -186,8 +186,8 @@ class GaiahRepo:
             # logger.success(f"Deleted remote branch: {branch_name}")
 
         except Exception as e:
-            logger.error(f"Error while deleting branch {branch_name}: {e}")
-            raise
+            logger.warning(f"Error while deleting branch {branch_name}: {e}")
+
 
     def merge_to_develop(self, branch_name):
         """
@@ -195,7 +195,10 @@ class GaiahRepo:
         """
         try:
             # developブランチに切り替え
-            run_command(["git", "checkout", "develop"], cwd=self.repo_dir)
+            try:
+                run_command(["git", "checkout", "-b", "develop"], cwd=self.repo_dir)
+            except:
+                run_command(["git", "checkout", "develop"], cwd=self.repo_dir)
             logger.info(f"Switched to develop branch.")
 
             # 指定されたブランチの変更をdevelopブランチにマージ
@@ -208,8 +211,8 @@ class GaiahRepo:
             self.push_to_remote(branch_name="develop")
 
         except Exception as e:
-            logger.error(f"Error while merging {branch_name} into develop: {e}")
-            raise
+            logger.warning(f"Error while merging {branch_name} into develop: {e}")
+
 
     def push_merged_branches(self):
         """
