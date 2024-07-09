@@ -34,3 +34,7 @@ tmp2.md
 tests
 template
 gaiah_toolkit.egg-info
+
+.gaiah
+.github
+issue_creator.log
