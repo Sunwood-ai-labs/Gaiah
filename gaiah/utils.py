@@ -15,8 +15,8 @@ def run_command(command, cwd=None, check=True):
         return result.stdout.strip()
     except subprocess.CalledProcessError as e:
         error_message = e.stderr.strip()
-        logger.error(f"Error while running command: {' '.join(command)}")
-        logger.error(f"Error message: {error_message}")
+        logger.warning(f"Error while running command: {' '.join(command)}")
+        logger.warning(f"Error message: {error_message}")
         raise
 
 def tqdm_sleep(n):
